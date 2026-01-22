@@ -804,5 +804,16 @@ body {
 
     .nav-container {
         justify-content: flex-end;
+        gap: var(--spacing-md);
+    }
+
+    /* Fix language toggle position on mobile */
+    .lang-toggle {
+        position: static;
+        order: 2;
+    }
+
+    .hamburger {
+        order: 1;
     }
 }
