@@ -144,6 +144,7 @@ p {
     text-align: center;
     margin-bottom: var(--spacing-xl);
     font-size: var(--font-size-h2);
+    font-family: var(--font-family-heading);
 }
 
 /* ===========================
@@ -170,6 +171,22 @@ p {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+}
+
+/* Language Toggle */
+.lang-toggle {
+    position: absolute;
+    right: var(--spacing-lg);
+    font-size: 0.9rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    transition: all var(--transition-fast);
+}
+
+.lang-toggle:hover {
+    color: var(--color-text-primary);
 }
 
 /* Desktop Navigation */
@@ -428,6 +445,258 @@ body {
 
     .skill-title {
         font-size: 1.15rem;
+    }
+}
+
+/* ===========================
+   PORTFOLIO SECTION
+   =========================== */
+#portfolio {
+    background-color: var(--color-background);
+}
+
+.project-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xxl);
+    margin-top: var(--spacing-xl);
+}
+
+.project-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    align-items: stretch;
+    padding: 0;
+    background-color: var(--color-white);
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+    transition: all var(--transition-medium);
+    overflow: hidden;
+}
+
+.project-card:hover {
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-5px);
+}
+
+/* Reverse layout for alternating projects */
+.project-card-reverse {
+    grid-template-columns: 1fr 1fr;
+}
+
+.project-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+    min-height: 400px;
+}
+
+.project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.project-content {
+    padding: var(--spacing-xl);
+}
+
+.project-title {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-h3);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.project-meta {
+    font-family: var(--font-family-body);
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.project-meta i {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* Ensure all SVG icons in project-meta are 20px */
+.project-meta i svg,
+.project-meta svg {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px;
+    min-height: 20px;
+}
+
+.project-details {
+    list-style: none;
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.project-details li {
+    font-family: var(--font-family-body);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    line-height: var(--line-height-base);
+}
+
+.project-details li i {
+    width: 20px;
+    height: 20px;
+    margin-top: 4px;
+    flex-shrink: 0;
+    color: var(--color-accent);
+}
+
+/* Target the actual SVG icons that Lucide generates - force 20px */
+.project-details li i svg,
+.project-details li svg {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px;
+    min-height: 20px;
+}
+
+/* Make text-based icons thicker to visually match other icons */
+.project-details li svg.lucide-book-text,
+.project-details li svg.lucide-file-text {
+    stroke-width: 2.5;
+}
+
+.project-link-text {
+    font-family: var(--font-family-body);
+    color: var(--color-accent);
+    font-size: 0.9rem;
+    word-break: break-all;
+    margin-top: var(--spacing-sm);
+}
+
+/* Mobile Layout for Portfolio */
+@media (max-width: 768px) {
+    .project-list {
+        gap: var(--spacing-xl);
+    }
+
+    .project-card,
+    .project-card-reverse {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+        padding: var(--spacing-lg);
+    }
+
+    .project-content {
+        padding: 0;
+    }
+
+    .project-title {
+        font-size: 1.25rem;
+    }
+
+    .project-meta {
+        font-size: 0.9rem;
+    }
+
+    .project-details li {
+        font-size: 0.9rem;
+    }
+}
+
+/* ===========================
+   CONTACT SECTION
+   =========================== */
+#contact {
+    background-color: var(--color-background);
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xxl);
+    align-items: start;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding-top: 0;
+    margin-top: 0;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-family: var(--font-family-body);
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+}
+
+.contact-item i {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--color-text-primary);
+}
+
+.contact-item i svg,
+.contact-item svg {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px;
+    min-height: 20px;
+}
+
+.contact-item a {
+    color: var(--color-accent);
+    word-break: break-all;
+    transition: color var(--transition-fast);
+}
+
+.contact-item a:hover {
+    color: var(--color-text-primary);
+    text-decoration: underline;
+}
+
+.contact-message {
+    font-family: var(--font-family-body);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-base);
+    padding-top: 0;
+    margin-top: 0;
+}
+
+.contact-message p {
+    margin-bottom: var(--spacing-md);
+}
+
+.contact-message p:first-child {
+    margin-top: 0;
+}
+
+/* Mobile Layout for Contact */
+@media (max-width: 768px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xl);
+    }
+
+    .contact-message {
+        text-align: left;
     }
 }
 

@@ -23,6 +23,9 @@
     <!-- Navigation Bar -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
+            <!-- Language Toggle -->
+            <a href="index-vi.html" class="lang-toggle" title="Chuyển sang tiếng Việt">VI</a>
+
             <!-- Desktop Navigation -->
             <ul class="nav-links">
                 <li><a href="#biography" class="nav-link active">Biography</a></li>
@@ -137,14 +140,134 @@
         <!-- Portfolio Section -->
         <section id="portfolio" class="section">
             <div class="container">
-                <!-- Content will be added in next step -->
+                <h2 class="section-title">Project Experience</h2>
+
+                <div class="project-list">
+                    <!-- Project 1: Hai Phong tourism (slide from left) -->
+                    <article class="project-card animate-on-scroll" data-animation="slide-left">
+                        <div class="project-image">
+                            <img src="image/project 1.png" alt="Hai Phong tourism">
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">Hai Phong tourism</h3>
+                            <p class="project-meta">
+                                <i data-lucide="calendar-days"></i> Time: Teracom (May 2024 - June 2024)
+                            </p>
+                            <p class="project-meta">
+                                <i data-lucide="user"></i> Responsibilities: Backend Developer
+                            </p>
+                            <ul class="project-details">
+                                <li><i data-lucide="boxes"></i> BE: Java Spring Boot 3<br>
+                                    FE: React<br>
+                                    Database: MySQL<br>
+                                    External services: Google Maps, Google Firebase</li>
+                                <li><i data-lucide="file-text"></i> Complete tourism management system for provincial
+                                    administration with user management, content management, map integration, and
+                                    analytics functionality.</li>
+                            </ul>
+                        </div>
+                    </article>
+
+                    <!-- Project 2: Collaborative system (slide from right) -->
+                    <article class="project-card project-card-reverse animate-on-scroll" data-animation="slide-right">
+                        <div class="project-content">
+                            <h3 class="project-title">Collaborative system to support learning</h3>
+                            <p class="project-meta">
+                                <i data-lucide="calendar-days"></i> Time: PTIT (9/2025 - 1/2026)
+                            </p>
+                            <p class="project-meta">
+                                <i data-lucide="user"></i> Responsibilities: Fullstack Developer
+                            </p>
+                            <ul class="project-details">
+                                <li><i data-lucide="boxes"></i> BE: Java Spring Boot<br>
+                                    FE: Next.js<br>
+                                    Database: Postgres, MongoDB, and Redis<br>
+                                    External services: Google Cloud Storage and Apache Kafka.<br>
+                                    Deployment: Docker and Vercel</li>
+                                <li><i data-lucide="file-text"></i> A comprehensive learning management system designed
+                                    to centralize student resources and reduce information fragmentation. Features
+                                    include scheduling, project collaboration, and community forums.</li>
+                                <li><i data-lucide="link"></i> Backend: <a
+                                        href="https://github.com/DATN-HIEP-HUNG/DATN.TEAM.BE" target="_blank"
+                                        rel="noopener noreferrer">https://github.com/DATN-HIEP-HUNG/DATN.TEAM.BE</a>
+                                </li>
+                                <li><i data-lucide="link"></i> Frontend: <a
+                                        href="https://github.com/finetglazer/Learning-Journey-FE" target="_blank"
+                                        rel="noopener noreferrer">https://github.com/finetglazer/Learning-Journey-FE</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="project-image">
+                            <img src="image/project 2.png" alt="Collaborative system">
+                        </div>
+                    </article>
+
+                    <!-- Project 3: Trading simulator (slide from left) -->
+                    <article class="project-card animate-on-scroll" data-animation="slide-left">
+                        <div class="project-image">
+                            <img src="image/Project 3.png" alt="Trading simulator platform">
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">Trading simulator platform</h3>
+                            <p class="project-meta">
+                                <i data-lucide="calendar-days"></i> Time: PTIT (2/2025 - 5/2025)
+                            </p>
+                            <p class="project-meta">
+                                <i data-lucide="user"></i> Responsibilities: Fullstack Developer
+                            </p>
+                            <ul class="project-details">
+                                <li><i data-lucide="boxes"></i> Backend: Java Spring Boot, MongoDB, Redis, Apache Kafka,
+                                    Spring Security<br>
+                                    Frontend: React<br>
+                                    Deployment: Docker, Railway</li>
+                                <li><i data-lucide="file-text"></i> Microservices-based stock trading simulation
+                                    platform with user authentication, account management, order processing, and
+                                    portfolio tracking features.</li>
+                                <li><i data-lucide="link"></i> Source: <a
+                                        href="https://github.com/finetglazer/Trading-simulator-platform" target="_blank"
+                                        rel="noopener noreferrer">https://github.com/finetglazer/Trading-simulator-platform</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </article>
+                </div>
             </div>
         </section>
 
         <!-- Contact Section -->
-        <section id="contact" class="section">
+        <section id="contact" class="section animate-on-scroll" data-animation="slide-up">
             <div class="container">
-                <!-- Content will be added in next step -->
+                <h2 class="section-title">Contact me</h2>
+
+                <div class="contact-grid">
+                    <!-- Contact Info -->
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i data-lucide="mail"></i>
+                            <span>tranhung174303@gmail.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i data-lucide="linkedin"></i>
+                            <a href="https://www.linkedin.com/in/tr%E1%BA%A7n-m%E1%BA%A1nh-h%C3%B9ng-9bb354260/"
+                                target="_blank" rel="noopener noreferrer">Tran Manh Hung</a>
+                        </div>
+                        <div class="contact-item">
+                            <i data-lucide="map-pin"></i>
+                            <span>Da Nang city, Viet Nam</span>
+                        </div>
+                        <div class="contact-item">
+                            <i data-lucide="phone"></i>
+                            <span>0365706735</span>
+                        </div>
+                    </div>
+
+                    <!-- Contact Message -->
+                    <div class="contact-message">
+                        <p>For me, working is not only for earning money, but it is also the support that we present to
+                            the life. By our supports, we will reap what we sow.</p>
+                        <p>Hope to have a chance to collaborate to make miracle things.</p>
+                    </div>
+                </div>
             </div>
         </section>
     </main>

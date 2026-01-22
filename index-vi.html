@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Trần Mạnh Hùng - Lập trình viên Full-Stack">
+    <meta name="author" content="Trần Mạnh Hùng">
+    <title>Trần Mạnh Hùng - Portfolio</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <!-- Language Toggle -->
+            <a href="index.html" class="lang-toggle" title="Switch to English">EN</a>
+
+            <!-- Desktop Navigation -->
+            <ul class="nav-links">
+                <li><a href="#biography" class="nav-link active">Tiểu sử</a></li>
+                <li><a href="#skills" class="nav-link">Kỹ năng</a></li>
+                <li><a href="#portfolio" class="nav-link">Dự án</a></li>
+                <li><a href="#contact" class="nav-link">Liên hệ</a></li>
+            </ul>
+
+            <!-- Mobile Hamburger Button -->
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu" id="mobileMenu">
+            <ul class="mobile-nav-links">
+                <li><a href="#biography" class="nav-link">Tiểu sử</a></li>
+                <li><a href="#skills" class="nav-link">Kỹ năng</a></li>
+                <li><a href="#portfolio" class="nav-link">Dự án</a></li>
+                <li><a href="#contact" class="nav-link">Liên hệ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Biography Section -->
+        <section id="biography" class="section animate-on-scroll" data-animation="slide-up">
+            <div class="container">
+                <div class="bio-grid">
+                    <div class="bio-image">
+                        <img src="image/avatar.jpg" alt="Trần Mạnh Hùng">
+                    </div>
+                    <div class="bio-content">
+                        <h1 class="bio-name">
+                            Trần Mạnh Hùng
+                        </h1>
+                        <p>Tôi đã hoàn thành đồ án tốt nghiệp với tư cách là sinh viên tại PTIT (Học viện Công nghệ Bưu
+                            chính Viễn thông). Hiện tại, tôi đang sinh sống tại Đà Nẵng, dự kiến tốt nghiệp với bằng
+                            'Giỏi' (GPA: 3.47/4.0)</p>
+                        <p>Tôi đã sẵn sàng cho môi trường quốc tế với chứng chỉ IELTS 6.5.</p>
+                        <p>Tôi tự định nghĩa mình là một lập trình viên hướng giải pháp, luôn nhìn xa hơn mã nguồn để
+                            giải quyết các thách thức kinh doanh phức tạp. Với kinh nghiệm dẫn dắt các nhóm phát triển
+                            nhỏ, tôi chuyên về thiết kế hệ thống không chỉ hoạt động tốt mà còn có khả năng mở rộng cao.
+                            Tôi tận dụng chuyên môn về Thiết kế Hệ thống, kết hợp với khả năng truyền đạt các khái niệm
+                            phức tạp cho các bên liên quan không chuyên kỹ thuật. Bên cạnh đó, tôi luôn tự học hỏi không
+                            ngừng để nâng cao kiến thức của bản thân.</p>
+
+                        <!-- Signature -->
+                        <img src="image/My_signature-removebg-preview.png" alt="Chữ ký" class="signature">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="section animate-on-scroll" data-animation="slide-down">
+            <div class="container">
+                <h2 class="section-title">Kỹ năng của tôi</h2>
+
+                <div class="skills-list">
+                    <!-- Skill Category 1 -->
+                    <div class="skill-category">
+                        <h3 class="skill-title">Cốt lõi (Chuyên môn của tôi)</h3>
+                        <p class="skill-description"><strong>Mô tả:</strong> Thế mạnh chính của tôi nằm ở việc xây dựng
+                            các hệ thống backend mạnh mẽ và kiến trúc microservices.</p>
+                        <p class="skill-tech"><strong>Cốt lõi:</strong> Hệ sinh thái Java: Java (2 năm kinh nghiệm),
+                            Spring
+                            Boot 3,
+                            Kiến trúc Spring Security, Microservices, RESTful APIs, Nguyên tắc OSIV</p>
+                    </div>
+
+                    <!-- Skill Category 2 -->
+                    <div class="skill-category">
+                        <h3 class="skill-title">Mở rộng Full-Stack (Frontend)</h3>
+                        <p class="skill-description"><strong>Mô tả:</strong> Tôi là cầu nối giữa logic backend và
+                            giao diện người dùng.</p>
+                        <p class="skill-tech"><strong>Cốt lõi:</strong> JavaScript, React, Next.js, React.
+                        </p>
+                        <p class="skill-tech"><strong>Ghi chú:</strong> Việc liệt kê Next.js cho thấy bạn hiện đại và có
+                            thể xử lý Server-Side Rendering (SSR).</p>
+                    </div>
+
+                    <!-- Skill Category 3 -->
+                    <div class="skill-category">
+                        <h3 class="skill-title">Dữ liệu & Hạ tầng (Hệ sinh thái)</h3>
+                        <p class="skill-description"><strong>Mô tả:</strong> Tôi đảm bảo dữ liệu an toàn, nhất quán,
+                            và ứng dụng có thể triển khai được.</p>
+                        <p class="skill-tech"><strong>Cốt lõi:</strong> Cơ sở dữ liệu: PostgreSQL (NoSQL), Redis
+                            (Caching)</p>
+                        <p class="skill-tech"><strong>DevOps & Công cụ:</strong> Docker, Railway, Apache Kafka (Message
+                            Broker), Git.</p>
+                    </div>
+
+                    <!-- Skill Category 4 -->
+                    <div class="skill-category">
+                        <h3 class="skill-title">Quy trình làm việc hiện đại</h3>
+                        <p class="skill-description"><strong>Hỗ trợ bởi AI:</strong> Thành thạo sử dụng Claude và
+                            Gemini Pro để tăng tốc phát triển và gỡ lỗi.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio Section -->
+        <section id="portfolio" class="section">
+            <div class="container">
+                <h2 class="section-title">Kinh nghiệm dự án</h2>
+
+                <div class="project-list">
+                    <!-- Project 1: Hai Phong tourism (slide from left) -->
+                    <article class="project-card animate-on-scroll" data-animation="slide-left">
+                        <div class="project-image">
+                            <img src="image/project 1.png" alt="Du lịch Hải Phòng">
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">Du lịch Hải Phòng</h3>
+                            <p class="project-meta">
+                                <i data-lucide="calendar-days"></i> Thời gian: Teracom (Tháng 5/2024 - Tháng 6/2024)
+                            </p>
+                            <p class="project-meta">
+                                <i data-lucide="user"></i> Vai trò: Lập trình viên Backend
+                            </p>
+                            <ul class="project-details">
+                                <li><i data-lucide="boxes"></i> BE: Java Spring Boot 3<br>
+                                    FE: React<br>
+                                    Cơ sở dữ liệu: MySQL<br>
+                                    Dịch vụ bên ngoài: Google Maps, Google Firebase</li>
+                                <li><i data-lucide="file-text"></i> Hệ thống quản lý du lịch hoàn chỉnh cho cơ quan hành
+                                    chính tỉnh với quản lý người dùng, quản lý nội dung, tích hợp bản đồ và chức năng
+                                    phân tích.</li>
+                            </ul>
+                        </div>
+                    </article>
+
+                    <!-- Project 2: Collaborative system (slide from right) -->
+                    <article class="project-card project-card-reverse animate-on-scroll" data-animation="slide-right">
+                        <div class="project-content">
+                            <h3 class="project-title">Hệ thống hợp tác hỗ trợ học tập</h3>
+                            <p class="project-meta">
+                                <i data-lucide="calendar-days"></i> Thời gian: PTIT (9/2025 - 1/2026)
+                            </p>
+                            <p class="project-meta">
+                                <i data-lucide="user"></i> Vai trò: Lập trình viên Fullstack
+                            </p>
+                            <ul class="project-details">
+                                <li><i data-lucide="boxes"></i> BE: Java Spring Boot<br>
+                                    FE: Next.js<br>
+                                    Cơ sở dữ liệu: Postgres, MongoDB, và Redis<br>
+                                    Dịch vụ bên ngoài: Google Cloud Storage và Apache Kafka.<br>
+                                    Triển khai: Docker và Vercel</li>
+                                <li><i data-lucide="file-text"></i> Hệ thống quản lý học tập toàn diện được thiết kế để
+                                    tập trung tài nguyên sinh viên và giảm phân mảnh thông tin. Các tính năng bao gồm
+                                    lập lịch, hợp tác dự án và diễn đàn cộng đồng.</li>
+                                <li><i data-lucide="link"></i> Backend: <a
+                                        href="https://github.com/DATN-HIEP-HUNG/DATN.TEAM.BE" target="_blank"
+                                        rel="noopener noreferrer">https://github.com/DATN-HIEP-HUNG/DATN.TEAM.BE</a>
+                                </li>
+                                <li><i data-lucide="link"></i> Frontend: <a
+                                        href="https://github.com/finetglazer/Learning-Journey-FE" target="_blank"
+                                        rel="noopener noreferrer">https://github.com/finetglazer/Learning-Journey-FE</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="project-image">
+                            <img src="image/project 2.png" alt="Hệ thống hợp tác">
+                        </div>
+                    </article>
+
+                    <!-- Project 3: Trading simulator (slide from left) -->
+                    <article class="project-card animate-on-scroll" data-animation="slide-left">
+                        <div class="project-image">
+                            <img src="image/Project 3.png" alt="Nền tảng mô phỏng giao dịch">
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">Nền tảng mô phỏng giao dịch</h3>
+                            <p class="project-meta">
+                                <i data-lucide="calendar-days"></i> Thời gian: PTIT (2/2025 - 5/2025)
+                            </p>
+                            <p class="project-meta">
+                                <i data-lucide="user"></i> Vai trò: Lập trình viên Fullstack
+                            </p>
+                            <ul class="project-details">
+                                <li><i data-lucide="boxes"></i> Backend: Java Spring Boot, MongoDB, Redis, Apache Kafka,
+                                    Spring Security<br>
+                                    Frontend: React<br>
+                                    Triển khai: Docker, Railway</li>
+                                <li><i data-lucide="file-text"></i> Nền tảng mô phỏng giao dịch chứng khoán dựa trên
+                                    microservices với xác thực người dùng, quản lý tài khoản, xử lý lệnh và các tính
+                                    năng theo dõi danh mục đầu tư.</li>
+                                <li><i data-lucide="link"></i> Mã nguồn: <a
+                                        href="https://github.com/finetglazer/Trading-simulator-platform" target="_blank"
+                                        rel="noopener noreferrer">https://github.com/finetglazer/Trading-simulator-platform</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section animate-on-scroll" data-animation="slide-up">
+            <div class="container">
+                <h2 class="section-title">Liên hệ với tôi</h2>
+
+                <div class="contact-grid">
+                    <!-- Contact Info -->
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i data-lucide="mail"></i>
+                            <span>tranhung174303@gmail.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i data-lucide="linkedin"></i>
+                            <a href="https://www.linkedin.com/in/tr%E1%BA%A7n-m%E1%BA%A1nh-h%C3%B9ng-9bb354260/"
+                                target="_blank" rel="noopener noreferrer">Trần Mạnh Hùng</a>
+                        </div>
+                        <div class="contact-item">
+                            <i data-lucide="map-pin"></i>
+                            <span>Thành phố Đà Nẵng, Việt Nam</span>
+                        </div>
+                        <div class="contact-item">
+                            <i data-lucide="phone"></i>
+                            <span>0365706735</span>
+                        </div>
+                    </div>
+
+                    <!-- Contact Message -->
+                    <div class="contact-message">
+                        <p>Với tôi, làm việc không chỉ để kiếm tiền, mà còn là sự đóng góp mà chúng ta dành cho cuộc
+                            sống. Bằng những đóng góp của mình, chúng ta sẽ gặt hái những gì mình gieo trồng.</p>
+                        <p>Hy vọng có cơ hội được hợp tác để tạo nên những điều kỳ diệu.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Main JavaScript -->
+    <script src="js/main.js"></script>
+</body>
+
+</html>
