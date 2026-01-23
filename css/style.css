@@ -586,6 +586,13 @@ body {
     margin-top: var(--spacing-sm);
 }
 
+.project-label {
+    min-width: 80px;
+    display: inline-block;
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-medium);
+}
+
 /* Mobile Layout for Portfolio */
 @media (max-width: 768px) {
     .project-list {
