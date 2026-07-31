@@ -402,3 +402,76 @@ body.gratefulness-page {
         padding: 0.5rem 0.6rem;
     }
 }
+
+/* ---- Floating Book Navigation Control Bar ---- */
+.book-nav {
+    position: absolute;
+    bottom: -55px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 0.35rem 0.75rem;
+    border-radius: 25px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    z-index: 1000;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nav-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.nav-btn:hover:not(:disabled) {
+    background: var(--color-text-primary);
+    color: #FFFFFF;
+    transform: scale(1.05);
+}
+
+.nav-btn:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.nav-page-indicator {
+    font-family: var(--font-family-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    min-width: 48px;
+    text-align: center;
+    user-select: none;
+}
+
+@media (max-width: 768px) {
+    .book-nav {
+        bottom: -48px;
+        padding: 0.3rem 0.65rem;
+    }
+
+    .nav-btn {
+        width: 34px;
+        height: 34px;
+    }
+}

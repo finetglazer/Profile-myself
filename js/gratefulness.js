@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initBook();
     initAutoHideScrollbars();
     initScrollHintsAndIsolation();
+    initBookNavigation();
+    initHorizontalSwipeNavigation();
 });
 
 // ===========================
@@ -301,5 +303,79 @@ function updateAllScrollHints() {
         wrapper.classList.toggle('has-more-bottom', hasOverflow);
         wrapper.classList.toggle('has-more-top', hasOverflow && !isTop);
     });
+}
+
+// ===========================
+// FLOATING NAV & SWIPE CONTROLS
+// ===========================
+function initBookNavigation() {
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const indicator = document.getElementById('pageIndicator');
+
+    if (!btnPrev || !btnNext || !indicator) return;
+
+    btnPrev.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (pageFlip) pageFlip.flipPrev('bottom');
+    });
+
+    btnNext.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (pageFlip) pageFlip.flipNext('bottom');
+    });
+
+    const updateNavState = (pageIndex) => {
+        const current = (pageIndex !== undefined ? pageIndex : (pageFlip ? pageFlip.getCurrentPageIndex() : 0)) + 1;
+        const total = TOTAL_PAGES || 1;
+
+        indicator.textContent = `${current} / ${total}`;
+        btnPrev.disabled = (current <= 1);
+        btnNext.disabled = (current >= total);
+    };
+
+    if (pageFlip) {
+        pageFlip.on('flip', (e) => {
+            updateNavState(e.data);
+        });
+    }
+
+    updateNavState(0);
+}
+
+function initHorizontalSwipeNavigation() {
+    let startX = 0;
+    let startY = 0;
+    const MIN_SWIPE_PX = 50;
+
+    document.addEventListener('touchstart', (e) => {
+        if (!e.touches || e.touches.length === 0) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+        if (!e.changedTouches || e.changedTouches.length === 0) return;
+        const endX = e.changedTouches[0].clientX;
+        const endY = e.changedTouches[0].clientY;
+
+        const diffX = endX - startX;
+        const diffY = endY - startY;
+
+        // Trigger horizontal page flip when horizontal swipe is 1.5x more dominant than vertical
+        if (Math.abs(diffX) > Math.abs(diffY) * 1.5 && Math.abs(diffX) >= MIN_SWIPE_PX) {
+            if (diffX < 0) {
+                // Swipe Left -> Next Page
+                if (pageFlip && pageFlip.getCurrentPageIndex() < TOTAL_PAGES - 1) {
+                    pageFlip.flipNext('bottom');
+                }
+            } else {
+                // Swipe Right -> Prev Page
+                if (pageFlip && pageFlip.getCurrentPageIndex() > 0) {
+                    pageFlip.flipPrev('bottom');
+                }
+            }
+        }
+    }, { passive: true });
 }
 
