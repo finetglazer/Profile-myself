@@ -274,11 +274,17 @@ function initScrollHintsAndIsolation() {
         // Update hints on multiple timers to handle rendering/StPageFlip layout delays
         [50, 150, 400, 1000].forEach(delay => setTimeout(updateHints, delay));
 
-        // ---- ISOLATE SCROLL EVENTS FROM BOOK FLIPPING ----
-        ['wheel', 'mousedown', 'mousemove', 'pointerdown', 'pointermove', 'touchstart', 'touchmove'].forEach(evtType => {
+        // ---- ISOLATE SCROLL EVENTS FROM BOOK FLIPPING (CAPTURE & BUBBLE PHASES) ----
+        ['wheel', 'mousedown', 'mousemove', 'pointerdown', 'pointermove', 'pointerup', 'touchstart', 'touchmove', 'touchend'].forEach(evtType => {
+            // Capture phase (intercepts before StPageFlip capture listeners)
             el.addEventListener(evtType, (e) => {
                 e.stopPropagation();
-            }, { passive: true });
+            }, { passive: true, capture: true });
+
+            // Bubble phase
+            el.addEventListener(evtType, (e) => {
+                e.stopPropagation();
+            }, { passive: true, capture: false });
         });
     });
 }

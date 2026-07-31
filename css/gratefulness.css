@@ -135,6 +135,9 @@ body.gratefulness-page {
     scrollbar-width: thin !important;
     scrollbar-color: transparent transparent !important;
     transition: scrollbar-color 0.3s ease;
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-y: contain;
 }
 
 .chapter-list-wrapper:hover,
