@@ -1,0 +1,401 @@
+/* ===========================
+   GRATEFULNESS BOOK PAGE STYLES
+   =========================== */
+
+/* ---- Configurable page margins ----
+   These 4 variables control the inner padding of every book page independently.
+
+   How to change them yourself:
+   - Open this file and find the :root block below.
+   - Edit any value. 1rem = 18px on this site.
+   - Example: increase --page-padding-left to 3.5rem for a wider left margin.
+
+   --page-padding-top     = space above the content
+   --page-padding-right   = space to the right of the content
+   --page-padding-bottom  = space below the content
+   --page-padding-left    = space to the left of the content
+*/
+:root {
+    --page-padding-top: 3rem;
+    --page-padding-right: 2.0rem;
+    --page-padding-bottom: 3rem;
+    --page-padding-left: 2.5rem;
+
+    /* ---- Configurable Gradient Fade Hints ----
+       --fade-hint-height     = Total height of the fade zone (e.g., 40px, 60px, 80px)
+       --fade-hint-solid-stop = Percentage of solid white before fading to transparent (e.g., 15%, 30%, 50%)
+    */
+    --fade-hint-height: 75px;
+    --fade-hint-solid-stop: 45%;
+}
+
+/* ---- Page-level overrides ---- */
+body.gratefulness-page {
+    padding-top: 0;
+    /* no navbar on this page */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--color-background);
+}
+
+/* ---- Book wrapper ---- */
+.book-scene {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* isolation:isolate creates a stacking context so that stacked pages with
+       negative z-index are confined behind #book and never intercept mouse events */
+    isolation: isolate;
+}
+
+/* ---- Stacked-page depth effect ----
+   Two full-sized page rectangles sit behind the book,
+   each offset further to the right and down.
+
+   How to configure:
+   --stack-offset-x : horizontal shift per layer (right)
+   --stack-offset-y : vertical shift per layer (down)
+   Increase these for a more dramatic stack, decrease for subtler.
+*/
+:root {
+    --stack-offset-x: 20px;
+    /* shift right per stacked layer */
+    --stack-offset-y: 15px;
+    /* shift down per stacked layer  */
+}
+
+.stacked-page {
+    position: absolute;
+    /* width & height are set by JS from pageFlip.getSettings() for exact match */
+    border-radius: 2px;
+    pointer-events: none;
+    /* Smooth fade when a layer appears/disappears */
+    transition: opacity 0.35s ease;
+}
+
+/* Class toggled by JS when the layer should disappear */
+.stacked-page.stack-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+
+/* ---- Individual pages ---- */
+.page {
+    background-color: var(--color-white);
+    padding: var(--page-padding-top) var(--page-padding-right) var(--page-padding-bottom) var(--page-padding-left);
+    box-sizing: border-box;
+    font-family: var(--font-family-body);
+    color: var(--color-text-primary);
+    overflow: hidden;
+    /* StPageFlip clips content at page boundary */
+    position: relative;
+    /* Flex column: propagates StPageFlip's assigned height (733px) down to
+       children so .chapter-list-wrapper and .page-body get a bounded height
+       and overflow-y:auto can actually trigger a scrollbar */
+    display: flex;
+    flex-direction: column;
+}
+
+/* ---- Title page ---- */
+.page-title {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 0;
+}
+
+.page-title .book-title {
+    font-family: var(--font-family-heading);
+    font-size: 2.2rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    margin-bottom: 2.5rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* Scrollable chapter list wrapper */
+.chapter-list-wrapper {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* ---- Scrollable containers & auto-hide scrollbar styling ---- */
+.chapter-list-wrapper,
+.page-body {
+    scrollbar-width: thin !important;
+    scrollbar-color: transparent transparent !important;
+    transition: scrollbar-color 0.3s ease;
+}
+
+.chapter-list-wrapper:hover,
+.page-body:hover,
+.chapter-list-wrapper.is-scrolling,
+.page-body.is-scrolling {
+    scrollbar-color: #5A5E62 #F0F4F8 !important;
+}
+
+/* Webkit (Chrome, Edge, Safari) */
+.chapter-list-wrapper::-webkit-scrollbar,
+.page-body::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+}
+
+.chapter-list-wrapper::-webkit-scrollbar-track,
+.page-body::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+.chapter-list-wrapper:hover::-webkit-scrollbar-track,
+.page-body:hover::-webkit-scrollbar-track,
+.chapter-list-wrapper.is-scrolling::-webkit-scrollbar-track,
+.page-body.is-scrolling::-webkit-scrollbar-track {
+    background: #F0F4F8 !important;
+    border-radius: 4px !important;
+}
+
+.chapter-list-wrapper::-webkit-scrollbar-thumb,
+.page-body::-webkit-scrollbar-thumb {
+    background-color: transparent !important;
+    border-radius: 4px !important;
+    transition: background-color 0.3s ease;
+}
+
+.chapter-list-wrapper:hover::-webkit-scrollbar-thumb,
+.page-body:hover::-webkit-scrollbar-thumb,
+.chapter-list-wrapper.is-scrolling::-webkit-scrollbar-thumb,
+.page-body.is-scrolling::-webkit-scrollbar-thumb {
+    background-color: #5A5E62 !important;
+}
+
+.chapter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-right: 0.5rem;
+}
+
+.chapter-item {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    cursor: pointer;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    transition: background-color var(--transition-fast);
+}
+
+.chapter-item:hover {
+    background-color: rgba(74, 144, 226, 0.06);
+}
+
+.chapter-name {
+    font-family: var(--font-family-heading);
+    font-size: 1.1rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    flex-shrink: 0;
+    min-width: 100px;
+}
+
+.chapter-description {
+    font-family: var(--font-family-body);
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+/* ---- Content pages ---- */
+.page-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 0;
+    position: relative;
+}
+
+.page-body {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    line-height: var(--line-height-base);
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-body);
+    padding-right: 0.5rem;
+}
+
+/* ---- Visual Scroll Hint Gradients ---- */
+.scroll-wrapper {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.page-title .scroll-wrapper {
+    height: 510px;
+    max-height: 510px;
+}
+
+.page-content .scroll-wrapper {
+    height: 600px;
+    max-height: 600px;
+}
+
+.chapter-list-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    position: relative;
+}
+
+.scroll-hint-top,
+.scroll-hint-bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    z-index: 20;
+}
+
+.scroll-hint-top {
+    top: 0;
+    height: var(--fade-hint-height, 55px);
+    background: linear-gradient(to bottom, #FFFFFF var(--fade-hint-solid-stop, 30%), rgba(255, 255, 255, 0));
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+}
+
+.scroll-hint-bottom {
+    bottom: 0;
+    height: var(--fade-hint-height, 55px);
+    background: linear-gradient(to top, #FFFFFF var(--fade-hint-solid-stop, 30%), rgba(255, 255, 255, 0));
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+.scroll-wrapper.has-more-top>.scroll-hint-top {
+    opacity: 1;
+}
+
+.scroll-wrapper.has-more-bottom>.scroll-hint-bottom {
+    opacity: 1;
+}
+
+.page-body p {
+    margin-bottom: 1rem;
+    text-align: justify;
+}
+
+/* First paragraph gets a tab-stop indent on its first line */
+.page-body p:first-child {
+    text-indent: 2em;
+}
+
+/* ---- StPageFlip overrides ---- */
+.stf__wrapper {
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10),
+        0 1px 6px rgba(0, 0, 0, 0.06);
+    border-radius: 4px;
+}
+
+/* ===========================
+   RESPONSIVE MOBILE STYLES
+   =========================== */
+@media (max-width: 768px) {
+    :root {
+        --page-padding-top: 1.5rem;
+        --page-padding-right: 1.2rem;
+        --page-padding-bottom: 1.5rem;
+        --page-padding-left: 1.5rem;
+        --stack-offset-x: 8px;
+        --stack-offset-y: 6px;
+        --fade-hint-height: 45px;
+    }
+
+    body.gratefulness-page {
+        padding: 0.5rem;
+        align-items: center;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    .page-title .book-title {
+        font-size: 1.35rem;
+        margin-bottom: 1.2rem;
+        line-height: 1.3;
+    }
+
+    .page-title .scroll-wrapper {
+        height: calc(100% - 55px);
+        max-height: calc(100% - 55px);
+    }
+
+    .page-content .scroll-wrapper {
+        height: 100%;
+        max-height: 100%;
+    }
+
+    .chapter-list {
+        gap: 0.75rem;
+        padding-right: 0.25rem;
+    }
+
+    .chapter-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+        padding: 0.6rem 0.75rem;
+    }
+
+    .chapter-name {
+        font-size: 0.98rem;
+        min-width: unset;
+    }
+
+    .chapter-description {
+        font-size: 0.8rem;
+    }
+
+    .page-body p {
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+        line-height: 1.6;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --page-padding-top: 1.2rem;
+        --page-padding-right: 1rem;
+        --page-padding-bottom: 1.2rem;
+        --page-padding-left: 1.2rem;
+        --stack-offset-x: 5px;
+        --stack-offset-y: 4px;
+        --fade-hint-height: 40px;
+    }
+
+    .page-title .book-title {
+        font-size: 1.2rem;
+        margin-bottom: 0.9rem;
+    }
+
+    .chapter-item {
+        padding: 0.5rem 0.6rem;
+    }
+}
