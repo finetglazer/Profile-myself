@@ -343,8 +343,8 @@
     const ICON_PENCIL = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>`;
 
     /* ============================================================
-       RENDER MEMBERS
-    ============================================================ */
+        RENDER MEMBERS
+     ============================================================ */
     function renderMembers() {
       const list = document.getElementById('membersList');
       const balances = computeBalances();
@@ -363,6 +363,16 @@
         const item = document.createElement('div');
         item.className = 'member-item';
         item.dataset.id = person.id;
+
+        // Toggle actions on mobile click
+        item.onclick = function (e) {
+          if (e.target.closest('.btn-icon') || e.target.closest('input')) return;
+          document.querySelectorAll('.member-item').forEach(el => {
+            if (el !== item) el.classList.remove('mobile-show-actions');
+          });
+          item.classList.toggle('mobile-show-actions');
+        };
+
         item.innerHTML = `
           <div class="member-left">
             <span class="member-name-display">${escHtml(person.name)}</span>
@@ -582,6 +592,16 @@
         const item = document.createElement('div');
         item.className = 'trade-item';
         item.dataset.id = trade.id;
+
+        // Toggle actions on mobile click
+        item.onclick = function (e) {
+          if (e.target.closest('.btn-icon')) return;
+          document.querySelectorAll('.trade-item').forEach(el => {
+            if (el !== item) el.classList.remove('mobile-show-actions');
+          });
+          item.classList.toggle('mobile-show-actions');
+        };
+
         item.innerHTML = `
           <span class="trade-name">${escHtml(trade.description)}</span>
           <span class="trade-amount">${amountK}k</span>
@@ -891,10 +911,17 @@
     ============================================================ */
     function goToPage(pageId) {
       const wrapper = document.getElementById('pagesWrapper');
-      if (pageId === 'pageTrades') {
-        wrapper.classList.add('on-page-2');
+
+      if (window.innerWidth <= 768) {
+        // On Mobile: Scroll smoothly to the target page
+        document.getElementById(pageId).scrollIntoView({ behavior: 'smooth' });
       } else {
-        wrapper.classList.remove('on-page-2');
+        // On Laptop: Execute the visual transform class
+        if (pageId === 'pageTrades') {
+          wrapper.classList.add('on-page-2');
+        } else {
+          wrapper.classList.remove('on-page-2');
+        }
       }
     }
 

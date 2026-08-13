@@ -874,64 +874,115 @@ select.input-underline {
 }
 
 /* ============================================================
+   CUSTOM SCROLLBAR FOR MODALS (Fixes sharp corners)
+============================================================ */
+.overlay-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overlay-card::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 18px 0;
+  /* Keeps the scrollbar track away from the rounded corners */
+}
+
+.overlay-card::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+.overlay-card::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Ensure actions don't block clicks when hidden */
+.member-actions,
+.trade-actions {
+  pointer-events: none;
+}
+
+.member-item:hover .member-actions,
+.trade-item:hover .trade-actions {
+  pointer-events: auto;
+}
+
+/* ============================================================
    MOBILE RESPONSIVE DESIGN (max-width: 768px)
 ============================================================ */
 @media screen and (max-width: 768px) {
 
-  /* Reset body for full-screen app feel */
   body {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    /* Prevent body scroll, handle scroll inside pages */
   }
 
-  /* Main Card becomes full screen */
+  /* --- 1. VERTICAL SWIPE / SCROLL FOR PAGES --- */
   .card {
     width: 100%;
     height: 100vh;
     height: 100dvh;
-    /* accounts for mobile browser UI */
     margin: 0;
     border-radius: 0;
     box-shadow: none;
+    display: block;
+
+    /* Native scrolling between pages */
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+  }
+
+  .pages-wrapper {
+    width: 100%;
+    height: 200%;
+    /* Holds 2 pages vertically */
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    transform: none !important;
+    /* Disables JS slide on mobile */
+    transition: none;
   }
 
-  /* Pages Wrapper for Horizontal Slide */
-  .pages-wrapper {
-    width: 200%;
-    /* Two pages, 100% each */
-    height: 100%;
-    display: flex;
-    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  }
-
-  /* Slide to Page 2 (Trades) */
-  .pages-wrapper.on-page-2 {
-    transform: translateX(-50%);
-  }
-
-  /* Individual Page Styles */
   .page {
-    width: 50%;
-    height: 100%;
+    width: 100%;
+    height: 50%;
+    /* Fits exactly to screen */
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
     padding: 16px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
   }
 
-  /* -------------------------------------------
-     INPUTS & BUTTONS (Touch Target Optimization)
-  ------------------------------------------- */
+  /* Always keep chevrons visible so manual scrolling works cleanly */
+  .pages-wrapper:not(.on-page-2) #pageTrades .page-nav-top,
+  .pages-wrapper.on-page-2 #pagePeople .page-nav {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  /* --- 2. TAP TO REVEAL ACTIONS --- */
+  .member-item:hover .member-actions,
+  .trade-item:hover .trade-actions {
+    opacity: 0;
+    /* Disable standard hover */
+    pointer-events: none;
+  }
+
+  .member-item.mobile-show-actions .member-actions,
+  .trade-item.mobile-show-actions .trade-actions {
+    opacity: 1;
+    /* Triggered via JS click */
+    pointer-events: auto;
+  }
+
+  /* --- 3. TOUCH TARGETS & BOTTOM SHEETS --- */
   .input-underline {
     font-size: 16px;
-    /* Prevents auto-zoom on iOS */
     padding: 12px 4px;
   }
 
@@ -945,12 +996,10 @@ select.input-underline {
   .name-input-row input {
     flex: 1;
     min-width: 0;
-    /* Prevent overflow */
   }
 
   .btn-circle {
     width: 48px;
-    /* Larger touch target */
     height: 48px;
     flex-shrink: 0;
   }
@@ -963,9 +1012,6 @@ select.input-underline {
     margin-bottom: 12px;
   }
 
-  /* -------------------------------------------
-     LISTS (Members & Trades)
-  ------------------------------------------- */
   .members-list,
   .trades-list {
     flex: 1;
@@ -1000,27 +1046,17 @@ select.input-underline {
     margin: 0 8px;
   }
 
-  .member-actions,
-  .trade-actions {
-    display: flex;
-    gap: 4px;
-  }
-
   .btn-icon {
     width: 40px;
     height: 40px;
     padding: 8px;
   }
 
-  /* -------------------------------------------
-     NAVIGATION CHEVRONS
-  ------------------------------------------- */
   .page-nav {
     display: flex;
     justify-content: center;
     padding: 16px 0;
     margin-top: auto;
-    /* Push to bottom */
   }
 
   .chevron-btn {
@@ -1029,12 +1065,8 @@ select.input-underline {
     background-size: 24px;
   }
 
-  /* -------------------------------------------
-     OVERLAYS (Modals as Bottom Sheets)
-  ------------------------------------------- */
   .overlay-backdrop {
     align-items: flex-end;
-    /* Align to bottom for easy thumb access */
     padding: 0;
   }
 
@@ -1043,7 +1075,6 @@ select.input-underline {
     max-height: 85vh;
     margin: 0;
     border-radius: 20px 20px 0 0;
-    /* Round top corners only */
     padding: 24px 20px;
     animation: slideUp 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
@@ -1069,16 +1100,6 @@ select.input-underline {
     justify-content: center;
   }
 
-  .overlay-title {
-    font-size: 20px;
-    margin-bottom: 20px;
-    padding-right: 40px;
-    /* Prevent text overlap with close button */
-  }
-
-  /* -------------------------------------------
-     TRADE FORM SPECIFICS
-  ------------------------------------------- */
   .trade-form-field {
     width: 100%;
     margin-bottom: 16px;
@@ -1088,7 +1109,6 @@ select.input-underline {
   .trade-form-participants {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    /* 2 columns on mobile */
     gap: 12px;
     margin: 12px 0 20px 0;
   }
@@ -1131,18 +1151,13 @@ select.input-underline {
   .trade-form-footer {
     margin-top: 24px;
     padding-bottom: 24px;
-    /* Extra padding for safe area */
   }
 
-  /* -------------------------------------------
-     TOAST NOTIFICATION
-  ------------------------------------------- */
   .toast {
     bottom: 32px;
     width: 90%;
     left: 5%;
     transform: translateX(0);
-    /* Overriding centering logic if needed */
     padding: 14px 16px;
     font-size: 14px;
     border-radius: 8px;
