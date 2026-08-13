@@ -1,0 +1,1154 @@
+/* ============================================================
+   RESET & BASE
+============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #3a3a3a;
+  --card-bg: #f5f5f3;
+  --text-main: #1a1a1a;
+  --text-muted: #999;
+  --text-green: #3a7d44;
+  --text-red: #c0392b;
+  --btn-dark: #1a1a1a;
+  --btn-light: #f5f5f3;
+  --input-line: #ccc;
+  --divider: #e5e5e3;
+  --overlay-bg: rgba(58, 58, 58, 0.55);
+  --font: 'Nunito', sans-serif;
+  --radius-btn: 999px;
+  --radius-card: 18px;
+  --transition: 0.2s ease;
+
+  /*
+   * CHEVRON SIZE GUIDE — adjust these three values to resize the chevron:
+   *   --chevron-size  : width & height of each V-stroke  (default 7px)
+   *   --chevron-gap   : vertical gap between the two V strokes (default 1px)
+   *   --chevron-thick : border line thickness             (default 2px)
+   */
+  --chevron-size: 7px;
+  --chevron-gap: 1px;
+  --chevron-thick: 2px;
+}
+
+/* Force Nunito on every element */
+html,
+body,
+input,
+button,
+select,
+textarea {
+  font-family: var(--font);
+}
+
+body {
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+/* ============================================================
+   CARD SHELL  (shared by both pages)
+============================================================ */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius-card);
+  width: 100%;
+  max-width: 480px;
+  height: 560px;
+  /* Fixed height for viewport clipping */
+  padding: 32px 28px 20px;
+  position: relative;
+  overflow: hidden;
+  /* Clips sliding pages cleanly */
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   PAGE TRANSITION — vertical scroll (top → down)
+============================================================ */
+
+/*
+ * Both pages stack vertically inside a wrapper that is
+ * twice the card height. Sliding the wrapper up by 50%
+ * reveals page 2 with a natural "scroll down" feel.
+ */
+.pages-wrapper {
+  display: flex;
+  flex-direction: column;
+  /* stack pages vertically */
+  height: 200%;
+  /* two page-heights tall   */
+  width: 100%;
+  flex-shrink: 0;
+  transition: transform 0.42s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.page {
+  display: flex !important;
+  /* always rendered, never hidden */
+  flex-direction: column;
+  height: 50%;
+  /* each page = 100% of card height  */
+  width: 100%;
+  flex-shrink: 0;
+  overflow: hidden;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+/* Clicking ↓ chevron: slide wrapper up → page 2 enters from below */
+.pages-wrapper.on-page-2 {
+  transform: translateY(-50%);
+}
+
+/* ============================================================
+   INPUT (underline style)
+============================================================ */
+.input-underline {
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid var(--input-line);
+  outline: none;
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--text-main);
+  padding: 6px 0;
+  width: 100%;
+  transition: border-color var(--transition);
+}
+
+.input-underline::placeholder {
+  color: var(--text-muted);
+}
+
+.input-underline:focus {
+  border-color: var(--text-main);
+}
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-btn);
+  padding: 8px 18px;
+  transition: opacity var(--transition), transform var(--transition);
+  white-space: nowrap;
+}
+
+.btn:hover {
+  opacity: 0.82;
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.btn-dark {
+  background: var(--btn-dark);
+  color: #fff;
+}
+
+.btn-light {
+  background: var(--btn-light);
+  color: var(--text-main);
+  border: 1.5px solid #ccc;
+}
+
+/* circle add button */
+.btn-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--btn-dark);
+  color: #fff;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: opacity var(--transition), transform var(--transition);
+}
+
+.btn-circle:hover {
+  opacity: 0.8;
+  transform: scale(1.08);
+}
+
+.btn-circle:active {
+  transform: scale(0.96);
+}
+
+/* icon-only action button */
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: color var(--transition);
+  line-height: 1;
+}
+
+.btn-icon:hover {
+  color: var(--text-main);
+}
+
+/* ============================================================
+   PAGE 1 — MEMBERS
+============================================================ */
+
+/* Name input row */
+.name-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+/* Show-transfer button: sharp corners, left-aligned above list */
+.btn-show-transfer {
+  border-radius: 0;
+  margin-bottom: 14px;
+  align-self: flex-start;
+  /* stick to left edge */
+}
+
+/* Clear-data row: flush right, below the member list */
+.clear-data-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+/* Members list */
+.members-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--divider);
+  gap: 8px;
+  animation: fadeSlideIn 0.22s ease;
+}
+
+.member-item:last-child {
+  border-bottom: none;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.member-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Inline edit input inside member row */
+.member-name-display {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-main);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.member-name-edit {
+  font-size: 15px;
+  font-weight: 500;
+  flex: 1;
+}
+
+.member-balance {
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 64px;
+  text-align: right;
+}
+
+.balance-positive {
+  color: var(--text-green);
+}
+
+.balance-negative {
+  color: var(--text-red);
+}
+
+.balance-zero {
+  color: var(--text-muted);
+}
+
+/* Actions hidden until row is hovered */
+.member-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.member-item:hover .member-actions {
+  opacity: 1;
+}
+
+/* Empty state */
+.empty-msg {
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: center;
+  margin-top: 32px;
+}
+
+/* ============================================================
+   BOTTOM CHEVRON NAV
+============================================================ */
+.page-nav {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  padding-top: 12px;
+}
+
+.chevron-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 4px 16px;
+  border-radius: 8px;
+  transition: color var(--transition), transform var(--transition);
+  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--chevron-gap);
+}
+
+.chevron-btn:hover {
+  color: var(--text-main);
+  transform: translateY(3px);
+}
+
+/* Two stacked V-shapes pointing downward */
+.chevron-btn::before,
+.chevron-btn::after {
+  content: '';
+  display: block;
+  width: var(--chevron-size);
+  height: var(--chevron-size);
+  border-right: var(--chevron-thick) solid currentColor;
+  border-bottom: var(--chevron-thick) solid currentColor;
+  transform: rotate(45deg);
+}
+
+.page-nav-top {
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding-top: 0;
+}
+
+.chevron-up::before,
+.chevron-up::after {
+  transform: rotate(-135deg);
+}
+
+.chevron-up:hover {
+  transform: translateY(-3px);
+}
+
+/* Visibility control: show ONLY chevron-down on Page 1, and ONLY chevron-up on Page 2 */
+.pages-wrapper:not(.on-page-2) #pageTrades .page-nav-top {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.pages-wrapper.on-page-2 #pagePeople .page-nav {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ============================================================
+   PAGE 2 — TRADES
+============================================================ */
+.trades-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.trade-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--divider);
+  gap: 8px;
+  animation: fadeSlideIn 0.22s ease;
+}
+
+.trade-item:last-child {
+  border-bottom: none;
+}
+
+.trade-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-main);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trade-amount {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-right: 4px;
+}
+
+/* Hover reveal 3 action buttons on trade row */
+.trade-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.trade-item:hover .trade-actions {
+  opacity: 1;
+}
+
+.add-trade-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+/* ============================================================
+   TRADE DETAIL OVERLAY
+============================================================ */
+.trade-detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.detail-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: var(--text-muted);
+}
+
+.detail-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.detail-value {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.detail-ratio-section {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-ratio-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.detail-ratio-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-muted);
+  padding-left: 8px;
+}
+
+.detail-ratio-idx {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.detail-ratio-name {
+  color: var(--text-muted);
+}
+
+.detail-ratio-val {
+  font-weight: 600;
+}
+
+.detail-ratio-pos {
+  color: var(--text-green);
+}
+
+.detail-ratio-neg {
+  color: var(--text-red);
+}
+
+/* ============================================================
+   ADD / EDIT TRADE FORM MODAL
+============================================================ */
+.trade-form-card {
+  max-width: 400px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.trade-form-field {
+  margin-bottom: 16px;
+}
+
+select.input-underline {
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.trade-form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-top: 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.flex-between {
+  justify-content: space-between;
+  width: 100%;
+}
+
+.equal-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.equal-check input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: var(--btn-dark);
+}
+
+.ratio-hint {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.participant-all {
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.trade-form-participants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.participant-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-main);
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 4px 10px;
+  border-radius: var(--radius-btn);
+  transition: background var(--transition);
+}
+
+.participant-check:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.participant-check input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: var(--btn-dark);
+}
+
+.trade-form-ratio-section {
+  margin-bottom: 16px;
+}
+
+.trade-form-ratios {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ratio-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 8px;
+}
+
+.ratio-input-name {
+  font-size: 14px;
+  color: var(--text-muted);
+  width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ratio-input-field {
+  flex: 1;
+  width: 70px;
+  text-align: right;
+  padding: 2px 4px;
+}
+
+.ratio-input-unit {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.ratio-error {
+  font-size: 12px;
+  color: var(--text-red);
+  margin-top: 4px;
+}
+
+.trade-form-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* ============================================================
+   TRANSFER OVERLAY
+============================================================ */
+.overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay-bg);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.overlay-backdrop.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.overlay-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-card);
+  width: 100%;
+  max-width: 360px;
+  padding: 32px 28px 28px;
+  transform: translateY(16px) scale(0.97);
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  opacity: 0;
+  position: relative;
+}
+
+.overlay-backdrop.visible .overlay-card {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.overlay-close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--text-muted);
+  cursor: pointer;
+  line-height: 1;
+  transition: color var(--transition);
+}
+
+.overlay-close:hover {
+  color: var(--text-main);
+}
+
+.overlay-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 20px;
+}
+
+.transfer-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.transfer-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-muted);
+  animation: fadeSlideIn 0.2s ease both;
+}
+
+.transfer-index {
+  font-size: 12px;
+  color: var(--text-muted);
+  min-width: 18px;
+}
+
+.transfer-from {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.transfer-arrow {
+  color: var(--text-muted);
+}
+
+.transfer-to {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.transfer-amount {
+  color: var(--text-main);
+  font-weight: 700;
+  margin-left: auto;
+}
+
+.transfer-empty {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 12px 0;
+}
+
+/* ============================================================
+   LOADING / SYNC INDICATOR
+============================================================ */
+.sync-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #1a1a1a, #888);
+  background-size: 200% 100%;
+  animation: shimmer 1s infinite linear;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.sync-bar.active {
+  opacity: 1;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ============================================================
+   TOAST
+============================================================ */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: var(--btn-dark);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: var(--radius-btn);
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 300;
+  white-space: nowrap;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================================
+   CONFIRM MODAL OVERLAY
+============================================================ */
+.confirm-card {
+  max-width: 340px;
+  text-align: center;
+  padding: 32px 28px 24px;
+}
+
+.confirm-message {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 24px;
+  line-height: 1.4;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* ============================================================
+   MOBILE RESPONSIVE DESIGN (max-width: 768px)
+============================================================ */
+@media screen and (max-width: 768px) {
+
+  /* Reset body for full-screen app feel */
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    /* Prevent body scroll, handle scroll inside pages */
+  }
+
+  /* Main Card becomes full screen */
+  .card {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    /* accounts for mobile browser UI */
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Pages Wrapper for Horizontal Slide */
+  .pages-wrapper {
+    width: 200%;
+    /* Two pages, 100% each */
+    height: 100%;
+    display: flex;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  /* Slide to Page 2 (Trades) */
+  .pages-wrapper.on-page-2 {
+    transform: translateX(-50%);
+  }
+
+  /* Individual Page Styles */
+  .page {
+    width: 50%;
+    height: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* -------------------------------------------
+     INPUTS & BUTTONS (Touch Target Optimization)
+  ------------------------------------------- */
+  .input-underline {
+    font-size: 16px;
+    /* Prevents auto-zoom on iOS */
+    padding: 12px 4px;
+  }
+
+  .name-input-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .name-input-row input {
+    flex: 1;
+    min-width: 0;
+    /* Prevent overflow */
+  }
+
+  .btn-circle {
+    width: 48px;
+    /* Larger touch target */
+    height: 48px;
+    flex-shrink: 0;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+
+  /* -------------------------------------------
+     LISTS (Members & Trades)
+  ------------------------------------------- */
+  .members-list,
+  .trades-list {
+    flex: 1;
+    margin-bottom: 16px;
+  }
+
+  .member-item,
+  .trade-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 14px 12px;
+    margin-bottom: 12px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    gap: 8px;
+  }
+
+  .member-left,
+  .trade-name {
+    flex: 1;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .member-balance,
+  .trade-amount {
+    font-size: 16px;
+    margin: 0 8px;
+  }
+
+  .member-actions,
+  .trade-actions {
+    display: flex;
+    gap: 4px;
+  }
+
+  .btn-icon {
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+  }
+
+  /* -------------------------------------------
+     NAVIGATION CHEVRONS
+  ------------------------------------------- */
+  .page-nav {
+    display: flex;
+    justify-content: center;
+    padding: 16px 0;
+    margin-top: auto;
+    /* Push to bottom */
+  }
+
+  .chevron-btn {
+    width: 48px;
+    height: 48px;
+    background-size: 24px;
+  }
+
+  /* -------------------------------------------
+     OVERLAYS (Modals as Bottom Sheets)
+  ------------------------------------------- */
+  .overlay-backdrop {
+    align-items: flex-end;
+    /* Align to bottom for easy thumb access */
+    padding: 0;
+  }
+
+  .overlay-card {
+    width: 100%;
+    max-height: 85vh;
+    margin: 0;
+    border-radius: 20px 20px 0 0;
+    /* Round top corners only */
+    padding: 24px 20px;
+    animation: slideUp 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .overlay-close {
+    top: 12px;
+    right: 16px;
+    font-size: 32px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .overlay-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+    padding-right: 40px;
+    /* Prevent text overlap with close button */
+  }
+
+  /* -------------------------------------------
+     TRADE FORM SPECIFICS
+  ------------------------------------------- */
+  .trade-form-field {
+    width: 100%;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+  }
+
+  .trade-form-participants {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* 2 columns on mobile */
+    gap: 12px;
+    margin: 12px 0 20px 0;
+  }
+
+  .participant-check {
+    padding: 12px;
+    background: #f7f9fa;
+    border-radius: 8px;
+    font-size: 15px;
+    word-break: break-word;
+  }
+
+  .participant-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+  }
+
+  .ratio-input-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background: #f7f9fa;
+    border-radius: 8px;
+  }
+
+  .ratio-input-name {
+    flex: 1;
+    font-size: 15px;
+  }
+
+  .ratio-input-field {
+    width: 70px;
+    text-align: right;
+    font-size: 16px;
+    background: transparent;
+  }
+
+  .trade-form-footer {
+    margin-top: 24px;
+    padding-bottom: 24px;
+    /* Extra padding for safe area */
+  }
+
+  /* -------------------------------------------
+     TOAST NOTIFICATION
+  ------------------------------------------- */
+  .toast {
+    bottom: 32px;
+    width: 90%;
+    left: 5%;
+    transform: translateX(0);
+    /* Overriding centering logic if needed */
+    padding: 14px 16px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+  }
+}

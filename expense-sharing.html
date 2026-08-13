@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Group expense sharing and settlement calculator for travel trips." />
+  <title>Expense Sharing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/expense-sharing.css" />
+</head>
+
+<body>
+
+  <!-- Sync progress bar -->
+  <div class="sync-bar" id="syncBar"></div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ============================================================
+       MAIN CARD
+  ============================================================ -->
+  <div class="card">
+
+    <!-- ==================== PAGE WRAPPER (holds both pages) ==================== -->
+    <div class="pages-wrapper" id="pagesWrapper">
+
+      <!-- ==================== PAGE 1: MEMBERS ==================== -->
+      <div class="page" id="pagePeople">
+
+        <!-- Add name input row -->
+        <div class="name-input-row">
+          <input class="input-underline" id="nameInput" type="text" placeholder="write your member name" maxlength="40"
+            autocomplete="off" onkeydown="handleNameKey(event)" />
+          <button class="btn-circle" id="btnAddName" onclick="addMember()" title="Add member">+</button>
+        </div>
+
+        <!-- Show transfers — left-aligned, sharp corners, sits above the member list -->
+        <button class="btn btn-dark btn-show-transfer" id="btnShowTransfer" onclick="showTransfer()">
+          Show transfers
+        </button>
+
+        <!-- Members list -->
+        <div class="members-list" id="membersList">
+          <!-- populated by JS -->
+        </div>
+
+        <!-- Clear data — right-aligned, below the member list -->
+        <div class="clear-data-row">
+          <button class="btn btn-dark" id="btnClearData" onclick="clearData()">Clear data</button>
+        </div>
+
+        <!-- Bottom nav chevron (down → trades page) -->
+        <div class="page-nav">
+          <button class="chevron-btn" title="Go to Trades" onclick="goToPage('pageTrades')"></button>
+        </div>
+
+      </div><!-- /pagePeople -->
+
+      <!-- ==================== PAGE 2: TRADES ==================== -->
+      <div class="page" id="pageTrades">
+
+        <!-- Top nav chevron (up → people page) -->
+        <div class="page-nav page-nav-top">
+          <button class="chevron-btn chevron-up" title="Go to Members" onclick="goToPage('pagePeople')"></button>
+        </div>
+
+        <!-- Trades list -->
+        <div class="trades-list" id="tradesList">
+          <!-- populated by JS -->
+        </div>
+
+        <!-- Add trade button — centered at bottom -->
+        <div class="add-trade-row">
+          <button class="btn btn-dark" id="btnAddTrade" onclick="openAddTrade()">Add trade name +</button>
+        </div>
+
+      </div><!-- /pageTrades -->
+
+    </div><!-- /pages-wrapper -->
+
+  </div><!-- /card -->
+
+  <!-- ============================================================
+       TRANSFER OVERLAY (Members → Show transfers)
+  ============================================================ -->
+  <div class="overlay-backdrop" id="transferOverlay" onclick="closeTransferOnBackdrop(event)">
+    <div class="overlay-card" id="transferCard">
+      <button class="overlay-close" onclick="closeTransfer()" title="Close">&#215;</button>
+      <div class="overlay-title">Transfer</div>
+      <ul class="transfer-list" id="transferList">
+        <!-- populated by JS -->
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       TRADE DETAIL OVERLAY (Trades → bar-chart icon)
+  ============================================================ -->
+  <div class="overlay-backdrop" id="tradeDetailOverlay" onclick="closeTradeDetailOnBackdrop(event)">
+    <div class="overlay-card" id="tradeDetailCard">
+      <button class="overlay-close" onclick="closeTradeDetail()" title="Close">&#215;</button>
+      <div class="overlay-title">Transfer detail</div>
+      <div class="trade-detail-body" id="tradeDetailBody">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       CONFIRMATION OVERLAY (Custom Modal replacing confirm())
+  ============================================================ -->
+  <div class="overlay-backdrop" id="confirmOverlay" onclick="closeConfirmOnBackdrop(event)">
+    <div class="overlay-card confirm-card" id="confirmCard">
+      <button class="overlay-close" onclick="resolveConfirm(false)" title="Close">&#215;</button>
+      <div class="confirm-message" id="confirmMessage">Are you sure?</div>
+      <div class="confirm-actions">
+        <button class="btn btn-dark" id="confirmOkBtn" onclick="resolveConfirm(true)">OK</button>
+        <button class="btn btn-light" id="confirmCancelBtn" onclick="resolveConfirm(false)">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ADD / EDIT TRADE MODAL
+  ============================================================ -->
+  <div class="overlay-backdrop" id="tradeFormOverlay" onclick="closeTradeFormOnBackdrop(event)">
+    <div class="overlay-card trade-form-card" id="tradeFormCard">
+      <button class="overlay-close" onclick="closeTradeForm()" title="Close">&#215;</button>
+      <div class="overlay-title" id="tradeFormTitle">Add trade</div>
+
+      <!-- Description -->
+      <input class="input-underline trade-form-field" id="tfDescription" type="text" placeholder="write your trade"
+        maxlength="60" autocomplete="off" />
+
+      <!-- Amount -->
+      <input class="input-underline trade-form-field" id="tfAmount" type="number" placeholder="Fee (k)" min="0" />
+
+      <!-- Paid by -->
+      <select class="input-underline trade-form-field" id="tfPaidBy">
+        <option value="" disabled selected>Paid by</option>
+      </select>
+
+      <!-- Participants -->
+      <div class="trade-form-label">Participant related</div>
+      <div class="trade-form-participants" id="tfParticipants">
+        <!-- checkboxes populated by JS -->
+      </div>
+
+      <!-- Ratio section (shown when participants > 0) -->
+      <div class="trade-form-ratio-section" id="tfRatioSection" style="display:none">
+        <div class="trade-form-label flex-between">
+          <span>Ratio <span class="ratio-hint" id="tfRatioHint"></span></span>
+          <label class="equal-check">
+            <input type="checkbox" id="tfEqualRatio" onchange="toggleEqualRatio()" checked />
+            Equal
+          </label>
+        </div>
+        <div class="trade-form-ratios" id="tfRatios">
+          <!-- per-person amount inputs populated by JS -->
+        </div>
+        <div class="ratio-error" id="tfRatioError"></div>
+      </div>
+
+      <!-- Submit -->
+      <div class="trade-form-footer">
+        <button class="btn btn-dark" id="tfSubmitBtn" onclick="submitTrade()">Add +</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       JAVASCRIPT
+  ============================================================ -->
+  <script>
+    /* ============================================================
+       CONFIG — JSONBin.io
+    ============================================================ */
+    const CONFIG = {
+      MASTER_KEY: '$2a$10$AnsM5bqZ28X4Lxhm/y93rO0axX0Gan0upBlB2fietCgpbHtL1ri7O',
+      BIN_ID: '6a7c83dcda38895dfedaf811',
+      get URL() { return `https://api.jsonbin.io/v3/b/${this.BIN_ID}`; },
+    };
+
+    /* ============================================================
+       IN-MEMORY STATE  (raw data only — balances computed on render)
+    ============================================================ */
+    let state = {
+      groupName: 'Trip 2026',
+      people: [],   // [{ id, name }]
+      trades: [],   // [{ id, description, amount, paidBy, splits:[{personId,weight}] }]
+    };
+
+    /* ============================================================
+       JSONBIN PERSISTENCE
+    ============================================================ */
+    function syncStart() { document.getElementById('syncBar').classList.add('active'); }
+    function syncEnd() { document.getElementById('syncBar').classList.remove('active'); }
+
+    async function fetchState() {
+      syncStart();
+      try {
+        const res = await fetch(CONFIG.URL + '/latest', {
+          headers: { 'X-Master-Key': CONFIG.MASTER_KEY },
+        });
+        if (!res.ok) throw new Error('Fetch failed: ' + res.status);
+        const json = await res.json();
+        state = json.record ?? state;
+      } catch (e) {
+        showToast('Could not load data — check connection');
+        console.error(e);
+      } finally {
+        syncEnd();
+        renderMembers();
+        renderTrades();
+      }
+    }
+
+    async function saveState() {
+      syncStart();
+      try {
+        const res = await fetch(CONFIG.URL, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Master-Key': CONFIG.MASTER_KEY,
+          },
+          body: JSON.stringify(state),
+        });
+        if (!res.ok) throw new Error('Save failed: ' + res.status);
+      } catch (e) {
+        showToast('Could not save — retrying…');
+        console.error(e);
+      } finally {
+        syncEnd();
+      }
+    }
+
+    /* ============================================================
+       BALANCE COMPUTATION  (derived, never stored)
+    ============================================================ */
+    function computeBalances() {
+      const balances = {};
+      state.people.forEach(p => { balances[p.id] = 0; });
+
+      state.trades.forEach(trade => {
+        // payer receives full amount
+        if (balances[trade.paidBy] !== undefined) {
+          balances[trade.paidBy] += trade.amount;
+        }
+
+        // each participant pays their share
+        const totalWeight = trade.splits.reduce((s, sp) => s + sp.weight, 0);
+        if (totalWeight > 0) {
+          trade.splits.forEach(sp => {
+            if (balances[sp.personId] !== undefined) {
+              balances[sp.personId] -= (sp.weight / totalWeight) * trade.amount;
+            }
+          });
+        }
+      });
+
+      return balances; // { personId: netBalance }
+    }
+
+    /* ============================================================
+       SETTLEMENT ALGORITHM  (Greedy Min-Cash-Flow)
+    ============================================================ */
+    function computeTransfers() {
+      const balances = computeBalances();
+      const EPSILON = 0.01;
+
+      const senders = [];  // owe money  (balance < 0)
+      const receivers = [];  // are owed   (balance > 0)
+
+      Object.entries(balances).forEach(([id, bal]) => {
+        if (bal < -EPSILON) senders.push({ id, amount: Math.abs(bal) });
+        if (bal > EPSILON) receivers.push({ id, amount: bal });
+      });
+
+      // sort largest first
+      senders.sort((a, b) => b.amount - a.amount);
+      receivers.sort((a, b) => b.amount - a.amount);
+
+      const transfers = [];
+
+      let si = 0, ri = 0;
+      while (si < senders.length && ri < receivers.length) {
+        const send = senders[si];
+        const recv = receivers[ri];
+        const xfer = Math.min(send.amount, recv.amount);
+
+        if (xfer > EPSILON) {
+          transfers.push({
+            from: send.id,
+            to: recv.id,
+            amount: Math.round(xfer),
+          });
+        }
+
+        send.amount -= xfer;
+        recv.amount -= xfer;
+
+        if (send.amount < EPSILON) si++;
+        if (recv.amount < EPSILON) ri++;
+      }
+
+      return transfers;
+    }
+
+    /* ============================================================
+       HELPERS
+    ============================================================ */
+    function uid() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    }
+
+    function personName(id) {
+      return (state.people.find(p => p.id === id) || {}).name || id;
+    }
+
+    function fmtK(n) {
+      // display in k-units; stored value is in full units
+      const abs = Math.abs(Math.round(n));
+      const kVal = abs / 1000;
+      const sign = n >= 0 ? '+' : '-';
+      if (kVal === Math.floor(kVal)) return sign + kVal + 'k';
+      return sign + kVal.toFixed(1) + 'k';
+    }
+
+    function showToast(msg, duration = 2800) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), duration);
+    }
+
+    const ICON_CHART = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>`;
+    const ICON_MINUS = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>`;
+    const ICON_PENCIL = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>`;
+
+    /* ============================================================
+       RENDER MEMBERS
+    ============================================================ */
+    function renderMembers() {
+      const list = document.getElementById('membersList');
+      const balances = computeBalances();
+      list.innerHTML = '';
+
+      if (state.people.length === 0) {
+        list.innerHTML = '<p class="empty-msg">No members yet. Add a name above.</p>';
+        return;
+      }
+
+      state.people.forEach(person => {
+        const bal = balances[person.id] ?? 0;
+        const balCls = bal > 0.01 ? 'balance-positive' : bal < -0.01 ? 'balance-negative' : 'balance-zero';
+        const balStr = Math.abs(bal) < 0.01 ? '0k' : fmtK(bal);
+
+        const item = document.createElement('div');
+        item.className = 'member-item';
+        item.dataset.id = person.id;
+        item.innerHTML = `
+          <div class="member-left">
+            <span class="member-name-display">${escHtml(person.name)}</span>
+          </div>
+          <span class="member-balance ${balCls}">${balStr}</span>
+          <div class="member-actions">
+            <button class="btn-icon" title="Edit name" onclick="startEditMember('${person.id}')">${ICON_PENCIL}</button>
+            <button class="btn-icon" title="Delete member" onclick="deleteMember('${person.id}')">${ICON_MINUS}</button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function escHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    /* ============================================================
+       ADD MEMBER
+    ============================================================ */
+    function addMember() {
+      const input = document.getElementById('nameInput');
+      const name = input.value.trim();
+      if (!name) { input.focus(); return; }
+
+      // prevent duplicates (case-insensitive)
+      if (state.people.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+        showToast('Name already exists');
+        return;
+      }
+
+      state.people.push({ id: uid(), name });
+      input.value = '';
+      input.focus();
+      renderMembers();
+      saveState();
+    }
+
+    function handleNameKey(e) {
+      if (e.key === 'Enter') addMember();
+    }
+
+    /* ============================================================
+       CONFIRM MODAL HELPER
+    ============================================================ */
+    let confirmResolver = null;
+
+    function customConfirm(msg) {
+      return new Promise((resolve) => {
+        confirmResolver = resolve;
+        document.getElementById('confirmMessage').textContent = msg;
+        document.getElementById('confirmOverlay').classList.add('visible');
+      });
+    }
+
+    function resolveConfirm(result) {
+      document.getElementById('confirmOverlay').classList.remove('visible');
+      if (confirmResolver) {
+        confirmResolver(result);
+        confirmResolver = null;
+      }
+    }
+
+    function closeConfirmOnBackdrop(e) {
+      if (e.target === document.getElementById('confirmOverlay')) resolveConfirm(false);
+    }
+
+    /* ============================================================
+       DELETE MEMBER
+    ============================================================ */
+    async function deleteMember(id) {
+      const person = state.people.find(p => p.id === id);
+      if (!person) return;
+      const ok = await customConfirm(`Remove "${person.name}" from the group?`);
+      if (!ok) return;
+
+      state.people = state.people.filter(p => p.id !== id);
+      // also remove from any trades
+      state.trades.forEach(t => {
+        t.splits = t.splits.filter(s => s.personId !== id);
+        if (t.paidBy === id) t.paidBy = '';
+      });
+      renderMembers();
+      saveState();
+    }
+
+    /* ============================================================
+       EDIT MEMBER NAME (inline)
+    ============================================================ */
+    function startEditMember(id) {
+      const item = document.querySelector(`.member-item[data-id="${id}"]`);
+      if (!item) return;
+      const person = state.people.find(p => p.id === id);
+      if (!person) return;
+
+      const display = item.querySelector('.member-name-display');
+      display.style.display = 'none';
+
+      const inp = document.createElement('input');
+      inp.className = 'input-underline member-name-edit';
+      inp.value = person.name;
+      inp.maxLength = 40;
+      inp.autocomplete = 'off';
+
+      inp.onkeydown = (e) => {
+        if (e.key === 'Enter') confirmEditMember(id, inp);
+        if (e.key === 'Escape') cancelEditMember(id, display, inp);
+      };
+      inp.onblur = () => confirmEditMember(id, inp);
+
+      item.querySelector('.member-left').appendChild(inp);
+      inp.focus();
+      inp.select();
+    }
+
+    function confirmEditMember(id, inp) {
+      // guard against double-fire on blur after Enter
+      if (inp._committed) return;
+      inp._committed = true;
+
+      const newName = inp.value.trim();
+      const person = state.people.find(p => p.id === id);
+      if (!person) return;
+
+      if (newName && newName !== person.name) {
+        if (state.people.some(p => p.id !== id && p.name.toLowerCase() === newName.toLowerCase())) {
+          showToast('Name already exists');
+        } else {
+          person.name = newName;
+          saveState();
+        }
+      }
+      renderMembers();
+    }
+
+    function cancelEditMember(id, display, inp) {
+      inp._committed = true;
+      inp.remove();
+      display.style.display = '';
+    }
+
+    /* ============================================================
+       CLEAR DATA
+    ============================================================ */
+    async function clearData() {
+      const ok = await customConfirm('Clear all data? This will delete all members and trades for this group.');
+      if (!ok) return;
+      state = { groupName: 'Trip 2026', people: [], trades: [] };
+      renderMembers();
+      renderTrades();
+      saveState();
+      showToast('All data cleared');
+    }
+
+    /* ============================================================
+       TRANSFER OVERLAY
+    ============================================================ */
+    function showTransfer() {
+      const transfers = computeTransfers();
+      const listEl = document.getElementById('transferList');
+      listEl.innerHTML = '';
+
+      if (transfers.length === 0) {
+        listEl.innerHTML = '<li class="transfer-empty">Everyone is settled up! 🎉</li>';
+      } else {
+        transfers.forEach((t, i) => {
+          const li = document.createElement('li');
+          li.className = 'transfer-item';
+          li.style.animationDelay = (i * 0.05) + 's';
+          li.innerHTML = `
+            <span class="transfer-index">${i + 1}.</span>
+            <span class="transfer-from">${escHtml(personName(t.from))}</span>
+            <span class="transfer-arrow">&#8594;</span>
+            <span class="transfer-to">${escHtml(personName(t.to))}</span>
+            <span class="transfer-amount">${Math.round(t.amount / 1000)}k</span>
+          `;
+          listEl.appendChild(li);
+        });
+      }
+
+      document.getElementById('transferOverlay').classList.add('visible');
+    }
+
+    function closeTransfer() {
+      document.getElementById('transferOverlay').classList.remove('visible');
+    }
+
+    function closeTransferOnBackdrop(e) {
+      if (e.target === document.getElementById('transferOverlay')) closeTransfer();
+    }
+
+    // close with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeTransfer();
+        closeTradeDetail();
+        closeTradeForm();
+        resolveConfirm(false);
+      }
+    });
+
+    /* ============================================================
+       TRADES — RENDER
+    ============================================================ */
+    function renderTrades() {
+      const list = document.getElementById('tradesList');
+      list.innerHTML = '';
+
+      if (state.trades.length === 0) {
+        list.innerHTML = '<p class="empty-msg">No trades yet. Add one below.</p>';
+        return;
+      }
+
+      state.trades.forEach(trade => {
+        const amountK = Math.round(trade.amount / 1000);
+        const item = document.createElement('div');
+        item.className = 'trade-item';
+        item.dataset.id = trade.id;
+        item.innerHTML = `
+          <span class="trade-name">${escHtml(trade.description)}</span>
+          <span class="trade-amount">${amountK}k</span>
+          <div class="trade-actions">
+            <button class="btn-icon" title="Statistic" onclick="showTradeDetail('${trade.id}')">${ICON_CHART}</button>
+            <button class="btn-icon" title="Delete" onclick="deleteTrade('${trade.id}')">${ICON_MINUS}</button>
+            <button class="btn-icon" title="Edit" onclick="openEditTrade('${trade.id}')">${ICON_PENCIL}</button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    /* ============================================================
+       TRADE DETAIL OVERLAY
+    ============================================================ */
+    function showTradeDetail(id) {
+      const trade = state.trades.find(t => t.id === id);
+      if (!trade) return;
+
+      const totalWeight = trade.splits.reduce((s, sp) => s + sp.weight, 0);
+      const paidByName = personName(trade.paidBy);
+      const amountK = Math.round(trade.amount / 1000);
+
+      // Build ratio list: payer gets (+amountK - their share), others get (-their share)
+      let ratioHtml = '';
+      trade.splits.forEach((sp, i) => {
+        const share = totalWeight > 0 ? (sp.weight / totalWeight) * trade.amount : 0;
+        const isPayer = sp.personId === trade.paidBy;
+        const net = isPayer ? trade.amount - share : -share;
+        const netK = Math.round(net / 1000);
+        const sign = netK >= 0 ? '+' : '';
+        const cls = netK >= 0 ? 'detail-ratio-pos' : 'detail-ratio-neg';
+        ratioHtml += `
+          <div class="detail-ratio-row">
+            <span class="detail-ratio-idx">${i + 1}.</span>
+            <span class="detail-ratio-name">${escHtml(personName(sp.personId))}:</span>
+            <span class="detail-ratio-val ${cls}">${sign}${netK}k</span>
+          </div>`;
+      });
+
+      document.getElementById('tradeDetailBody').innerHTML = `
+        <div class="detail-field">
+          <span class="detail-label">Name:</span>
+          <span class="detail-value">${escHtml(trade.description)}</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-label">Money:</span>
+          <span class="detail-value">${amountK}k</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-label">Paid by:</span>
+          <span class="detail-value">${escHtml(paidByName)}</span>
+        </div>
+        <div class="detail-ratio-section">
+          <div class="detail-ratio-title">Ratio</div>
+          ${ratioHtml}
+        </div>
+      `;
+
+      document.getElementById('tradeDetailOverlay').classList.add('visible');
+    }
+
+    function closeTradeDetail() {
+      document.getElementById('tradeDetailOverlay').classList.remove('visible');
+    }
+
+    function closeTradeDetailOnBackdrop(e) {
+      if (e.target === document.getElementById('tradeDetailOverlay')) closeTradeDetail();
+    }
+
+    /* ============================================================
+       ADD / EDIT TRADE FORM
+    ============================================================ */
+    let editingTradeId = null; // null = add mode, string = edit mode
+
+    function openAddTrade() {
+      editingTradeId = null;
+      document.getElementById('tradeFormTitle').textContent = 'Add trade';
+      document.getElementById('tfSubmitBtn').textContent = 'Add +';
+      document.getElementById('tfDescription').value = '';
+      document.getElementById('tfAmount').value = '';
+      document.getElementById('tfEqualRatio').checked = true;
+      document.getElementById('tfRatioError').textContent = '';
+      populateTradeForm(null);
+      document.getElementById('tradeFormOverlay').classList.add('visible');
+      setTimeout(() => document.getElementById('tfDescription').focus(), 120);
+    }
+
+    function openEditTrade(id) {
+      const trade = state.trades.find(t => t.id === id);
+      if (!trade) return;
+      editingTradeId = id;
+      document.getElementById('tradeFormTitle').textContent = 'Edit trade';
+      document.getElementById('tfSubmitBtn').textContent = 'Save ✎';
+      document.getElementById('tfDescription').value = trade.description;
+      document.getElementById('tfAmount').value = Math.round(trade.amount / 1000);
+      document.getElementById('tfEqualRatio').checked = false; // allow custom ratios by default on edit
+      document.getElementById('tfRatioError').textContent = '';
+      populateTradeForm(trade);
+      document.getElementById('tradeFormOverlay').classList.add('visible');
+    }
+
+    function populateTradeForm(trade) {
+      // Paid-by selector
+      const paidByEl = document.getElementById('tfPaidBy');
+      paidByEl.innerHTML = '<option value="" disabled>Paid by</option>';
+      state.people.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.name;
+        if (trade && trade.paidBy === p.id) opt.selected = true;
+        paidByEl.appendChild(opt);
+      });
+      if (!trade) paidByEl.value = '';
+
+      // Participant checkboxes
+      const partEl = document.getElementById('tfParticipants');
+      partEl.innerHTML = `
+        <label class="participant-check participant-all">
+          <input type="checkbox" id="tfCheckAll" onchange="toggleCheckAll(this)" />
+          All
+        </label>
+      `;
+
+      state.people.forEach(p => {
+        const checked = trade ? trade.splits.some(s => s.personId === p.id) : true;
+        const label = document.createElement('label');
+        label.className = 'participant-check';
+        label.innerHTML = `
+          <input type="checkbox" class="part-checkbox" value="${p.id}" ${checked ? 'checked' : ''}
+            onchange="updateRatioInputs()" />
+          ${escHtml(p.name)}
+        `;
+        partEl.appendChild(label);
+      });
+
+      updateRatioInputs(trade);
+    }
+
+    function toggleCheckAll(allCb) {
+      const cbs = document.querySelectorAll('.part-checkbox');
+      cbs.forEach(cb => cb.checked = allCb.checked);
+      updateRatioInputs();
+    }
+
+    function toggleEqualRatio() {
+      updateRatioInputs();
+    }
+
+    function updateRatioInputs(prefillTrade) {
+      const amountK = parseFloat(document.getElementById('tfAmount').value) || 0;
+      const allCbs = [...document.querySelectorAll('.part-checkbox')];
+      const checked = [...document.querySelectorAll('.part-checkbox:checked')];
+      const section = document.getElementById('tfRatioSection');
+      const ratiosEl = document.getElementById('tfRatios');
+      const isEqual = document.getElementById('tfEqualRatio').checked;
+
+      // Update "All" checkbox state
+      const checkAllEl = document.getElementById('tfCheckAll');
+      if (checkAllEl) {
+        checkAllEl.checked = allCbs.length > 0 && checked.length === allCbs.length;
+      }
+
+      if (checked.length === 0) { section.style.display = 'none'; return; }
+      section.style.display = '';
+
+      const equalVal = (amountK > 0 && checked.length > 0) ? (amountK / checked.length) : 0;
+      const equalFormatted = Math.round(equalVal * 100) / 100;
+
+      // Keep existing values if inputs already exist
+      const existing = {};
+      ratiosEl.querySelectorAll('.ratio-input-row').forEach(row => {
+        existing[row.dataset.pid] = row.querySelector('input').value;
+      });
+
+      ratiosEl.innerHTML = '';
+      checked.forEach(cb => {
+        const pid = cb.value;
+        const name = personName(pid);
+        let val;
+        if (isEqual) {
+          val = equalFormatted;
+        } else if (prefillTrade) {
+          const sp = prefillTrade.splits.find(s => s.personId === pid);
+          const totalW = prefillTrade.splits.reduce((a, s) => a + s.weight, 0);
+          val = sp && totalW > 0 ? Math.round((sp.weight / totalW) * (prefillTrade.amount / 1000) * 100) / 100 : equalFormatted;
+        } else {
+          val = existing[pid] !== undefined ? existing[pid] : equalFormatted;
+        }
+
+        const row = document.createElement('div');
+        row.className = 'ratio-input-row';
+        row.dataset.pid = pid;
+        row.innerHTML = `
+          <span class="ratio-input-name">${escHtml(name)}</span>
+          <input class="input-underline ratio-input-field" type="number" step="any" min="0"
+            value="${val}" ${isEqual ? 'disabled' : ''} oninput="validateRatioSum()" />
+          <span class="ratio-input-unit">k</span>
+        `;
+        ratiosEl.appendChild(row);
+      });
+
+      validateRatioSum();
+    }
+
+    function validateRatioSum() {
+      const amountK = parseFloat(document.getElementById('tfAmount').value) || 0;
+      const inputs = [...document.querySelectorAll('.ratio-input-field')];
+      const sum = inputs.reduce((s, i) => s + (parseFloat(i.value) || 0), 0);
+      const errEl = document.getElementById('tfRatioError');
+      const hint = document.getElementById('tfRatioHint');
+      const isEqual = document.getElementById('tfEqualRatio').checked;
+
+      if (!isEqual && amountK > 0 && Math.abs(sum - amountK) > 0.1) {
+        errEl.textContent = `Sum is ${Math.round(sum * 100) / 100}k, must equal ${amountK}k`;
+        hint.textContent = '— Needed to change';
+        hint.style.color = 'var(--text-red)';
+      } else {
+        errEl.textContent = '';
+        hint.textContent = '';
+      }
+    }
+
+    function submitTrade() {
+      const description = document.getElementById('tfDescription').value.trim();
+      const amountK = parseFloat(document.getElementById('tfAmount').value);
+      const paidBy = document.getElementById('tfPaidBy').value;
+      const checked = [...document.querySelectorAll('.part-checkbox:checked')];
+      const isEqual = document.getElementById('tfEqualRatio').checked;
+
+      if (!description) { showToast('Enter a trade name'); return; }
+      if (!amountK || amountK <= 0) { showToast('Enter a valid amount'); return; }
+      if (!paidBy) { showToast('Select who paid'); return; }
+      if (checked.length === 0) { showToast('Select at least one participant'); return; }
+
+      const inputs = [...document.querySelectorAll('.ratio-input-field')];
+      const sum = inputs.reduce((s, i) => s + (parseFloat(i.value) || 0), 0);
+
+      if (!isEqual && Math.abs(sum - amountK) > 0.1) {
+        showToast(`Ratio sum (${Math.round(sum * 100) / 100}k) must equal amount (${amountK}k)`);
+        return;
+      }
+
+      // Build splits using weights
+      const splits = inputs.map((inp, i) => ({
+        personId: checked[i].value,
+        weight: isEqual ? 1 : (parseFloat(inp.value) || 0),
+      }));
+
+      const totalW = splits.reduce((s, sp) => s + sp.weight, 0);
+      const normSplits = splits.map(sp => ({
+        personId: sp.personId,
+        weight: totalW > 0 ? sp.weight / totalW : 1 / splits.length,
+      }));
+
+      if (editingTradeId) {
+        const trade = state.trades.find(t => t.id === editingTradeId);
+        if (trade) {
+          trade.description = description;
+          trade.amount = Math.round(amountK * 1000);
+          trade.paidBy = paidBy;
+          trade.splits = normSplits;
+        }
+      } else {
+        state.trades.push({
+          id: uid(),
+          description,
+          amount: Math.round(amountK * 1000),
+          paidBy,
+          splits: normSplits,
+        });
+      }
+
+      closeTradeForm();
+      renderTrades();
+      renderMembers(); // balances change
+      saveState();
+    }
+
+    async function deleteTrade(id) {
+      const trade = state.trades.find(t => t.id === id);
+      if (!trade) return;
+      const ok = await customConfirm(`Delete "${trade.description}"?`);
+      if (!ok) return;
+
+      state.trades = state.trades.filter(t => t.id !== id);
+      renderTrades();
+      renderMembers();
+      saveState();
+    }
+
+    function closeTradeForm() {
+      document.getElementById('tradeFormOverlay').classList.remove('visible');
+    }
+
+    function closeTradeFormOnBackdrop(e) {
+      if (e.target === document.getElementById('tradeFormOverlay')) closeTradeForm();
+    }
+
+    // Re-run ratio preview whenever amount changes
+    document.getElementById('tfAmount').addEventListener('input', () => updateRatioInputs());
+
+
+    /* ============================================================
+       PAGE NAVIGATION
+    ============================================================ */
+    function goToPage(pageId) {
+      const wrapper = document.getElementById('pagesWrapper');
+      if (pageId === 'pageTrades') {
+        wrapper.classList.add('on-page-2');
+      } else {
+        wrapper.classList.remove('on-page-2');
+      }
+    }
+
+    /* ============================================================
+       INIT
+    ============================================================ */
+    fetchState();
+  </script>
+
+</body>
+
+</html>
