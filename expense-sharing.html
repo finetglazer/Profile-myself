@@ -926,9 +926,31 @@
     }
 
     /* ============================================================
+       MOBILE SCROLL LISTENER (Updates chevrons during swipe)
+    ============================================================ */
+    const mainCard = document.querySelector('.card');
+    mainCard.addEventListener('scroll', function () {
+      if (window.innerWidth <= 768) {
+        const wrapper = document.getElementById('pagesWrapper');
+        // If scrolled more than 1/3 of the screen, we are on page 2
+        if (mainCard.scrollTop > window.innerHeight / 3) {
+          wrapper.classList.add('on-page-2');
+        } else {
+          wrapper.classList.remove('on-page-2');
+        }
+      }
+    });
+
+    /* ============================================================
        INIT
     ============================================================ */
     fetchState();
+  </script>
+
+  /* ============================================================
+  INIT
+  ============================================================ */
+  fetchState();
   </script>
 
 </body>

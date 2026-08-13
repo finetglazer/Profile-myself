@@ -916,7 +916,6 @@ select.input-underline {
     padding: 0;
     overflow: hidden;
     overscroll-behavior-y: none;
-    /* Fix 2: Stops iOS rubber-banding so the chevron below doesn't peek through */
   }
 
   /* --- VERTICAL SWIPE / SCROLL FOR PAGES --- */
@@ -955,7 +954,6 @@ select.input-underline {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* Fix 2: Prevents nested scroll overlapping */
   }
 
   /* --- TOUCH TARGETS & CENTERED BUTTONS --- */
@@ -989,11 +987,10 @@ select.input-underline {
     border-radius: 8px;
     margin-bottom: 12px;
     justify-content: center;
-    /* Fix 1: Centers text inside Show Transfer, Clear Data, Add Trade */
     text-align: center;
   }
 
-  /* --- LISTS: DROP LIST ACTIONS & RIGHT-ALIGNED MONEY (Fix 3) --- */
+  /* --- LISTS & RIGHT-ALIGNED MONEY --- */
   .members-list,
   .trades-list {
     flex: 1;
@@ -1005,7 +1002,6 @@ select.input-underline {
   .trade-item {
     display: flex;
     flex-wrap: wrap;
-    /* Allows actions to drop to a new line */
     align-items: center;
     padding: 14px 12px;
     margin-bottom: 12px;
@@ -1028,31 +1024,37 @@ select.input-underline {
   .trade-amount {
     font-size: 16px;
     margin-left: auto;
-    /* Fix 3: Pushes the money text strictly to the right side */
     margin-right: 0;
     flex-shrink: 0;
   }
 
-  /* Drop List Action Menu (Fix 3) */
+  /* --- ANIMATED DROP LIST ACTIONS (Fixes iOS Disappearing Glitch) --- */
   .member-actions,
   .trade-actions {
     width: 100%;
-    /* Forces the actions to a new row below the name/money */
-    display: none;
-    /* Hidden by default instead of using opacity */
+    display: flex;
     justify-content: flex-end;
-    /* Aligns edit/delete buttons to the right */
     gap: 12px;
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px dashed #e5e5e3;
-    /* Adds a separator line for the dropdown */
+    pointer-events: none;
+
+    /* Using max-height instead of display:none prevents Safari rendering bugs */
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 1px dashed transparent;
+    transition: max-height 0.3s ease, opacity 0.2s ease, margin 0.2s ease, padding 0.2s ease, border-color 0.2s ease;
   }
 
-  /* When JS adds the active class, show the drop list */
+  /* When JS adds the active class */
   .member-item.mobile-show-actions .member-actions,
   .trade-item.mobile-show-actions .trade-actions {
-    display: flex;
+    max-height: 60px;
+    opacity: 1;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top-color: #e5e5e3;
     pointer-events: auto;
   }
 
@@ -1064,7 +1066,7 @@ select.input-underline {
     border-radius: 8px;
   }
 
-  /* --- NAVIGATION CHEVRONS (Fix 2) --- */
+  /* --- NAVIGATION CHEVRONS --- */
   .page-nav {
     display: flex;
     justify-content: center;
@@ -1075,7 +1077,6 @@ select.input-underline {
   .page-nav-top {
     margin-top: 0;
     padding-top: 0;
-    /* Fix 2: Shrinks the massive space above the Up chevron on Trades page */
     margin-bottom: 4px;
   }
 
@@ -1083,14 +1084,6 @@ select.input-underline {
     width: 48px;
     height: 48px;
     background-size: 24px;
-  }
-
-  /* Keep chevrons visible for manual JS clicks */
-  .pages-wrapper:not(.on-page-2) #pageTrades .page-nav-top,
-  .pages-wrapper.on-page-2 #pagePeople .page-nav {
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
   }
 
   /* --- OVERLAYS & FORMS --- */
