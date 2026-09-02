@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Daily curated news on robotics, green energy, health and technology — handpicked for you.">
+    <meta name="author" content="Tran Manh Hung">
+    <title>Daily News — Tran Manh Hung</title>
+    <link rel="icon" type="image/png" href="image/My_signature-removebg-preview.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/daily-news.css">
+</head>
+
+<body>
+    <main class="news-page" id="news-page">
+
+        <!-- Header -->
+        <header class="news-header" id="news-header">
+            <span class="news-header__edition" id="edition-label">Morning Edition</span>
+            <h1 class="news-header__title">Daily news for you</h1>
+            <div class="news-header__meta">
+                <span class="news-header__date" id="today-date"></span>
+                <span class="news-header__count" id="article-count" aria-live="polite"></span>
+            </div>
+        </header>
+
+        <!-- News Feed (populated by JS) -->
+        <ul class="news-feed" id="news-feed" aria-label="News articles" hidden></ul>
+
+        <!-- Skeleton Loader (shown while fetching) -->
+        <ul class="skeleton-feed" id="skeleton-loader" aria-label="Loading news articles" aria-busy="true">
+            <li class="skeleton-item">
+                <div class="skeleton-line skeleton-line--title-1"></div>
+                <div class="skeleton-line skeleton-line--title-2"></div>
+                <div class="skeleton-line skeleton-line--body-1"></div>
+                <div class="skeleton-line skeleton-line--body-2"></div>
+                <div class="skeleton-line skeleton-line--body-3"></div>
+            </li>
+            <li class="skeleton-item">
+                <div class="skeleton-line skeleton-line--title-1"></div>
+                <div class="skeleton-line skeleton-line--title-2"></div>
+                <div class="skeleton-line skeleton-line--body-1"></div>
+                <div class="skeleton-line skeleton-line--body-2"></div>
+                <div class="skeleton-line skeleton-line--body-3"></div>
+            </li>
+            <li class="skeleton-item">
+                <div class="skeleton-line skeleton-line--title-1"></div>
+                <div class="skeleton-line skeleton-line--title-2"></div>
+                <div class="skeleton-line skeleton-line--body-1"></div>
+                <div class="skeleton-line skeleton-line--body-2"></div>
+                <div class="skeleton-line skeleton-line--body-3"></div>
+            </li>
+        </ul>
+
+        <!-- Error State -->
+        <div class="news-error" id="news-error" role="alert" aria-live="assertive">
+            <div class="news-error__icon" aria-hidden="true">📡</div>
+            <p class="news-error__title">Couldn't load the news</p>
+            <p class="news-error__message" id="error-message">Please check your connection and try again.</p>
+            <button class="news-error__retry" id="retry-btn">Try again</button>
+        </div>
+
+    </main>
+
+    <script>
+        var $ = function(id) { return document.getElementById(id); };
+
+        function formatDate(date) {
+            return date.toLocaleDateString('en-US', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+        }
+
+        function getEdition() {
+            var h = new Date().getHours();
+            if (h < 12) return 'Morning Edition';
+            if (h < 17) return 'Afternoon Edition';
+            return 'Evening Edition';
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function escapeAttr(str) {
+            return String(str).replace(/"/g, '%22');
+        }
+
+        function renderArticles(articles) {
+            var feed = $('news-feed');
+            feed.innerHTML = '';
+
+            for (var i = 0; i < articles.length; i++) {
+                var article = articles[i];
+                var li = document.createElement('li');
+                li.className = 'news-article';
+
+                li.innerHTML =
+                    '<a class="news-article__link"' +
+                    ' href="' + escapeAttr(article.url) + '"' +
+                    ' target="_blank" rel="noopener noreferrer">' +
+                    '<h2 class="news-article__heading">' + escapeHtml(article.title) + '</h2>' +
+                    '<p class="news-article__summary">' + escapeHtml(article.summary) + '</p>' +
+                    '</a>' +
+                    '<div class="news-article__footer">' +
+                    '<a class="news-article__read-more"' +
+                    ' href="' + escapeAttr(article.url) + '"' +
+                    ' target="_blank" rel="noopener noreferrer"' +
+                    ' tabindex="-1" aria-hidden="true">' +
+                    'Read full story' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"' +
+                    ' stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+                    '<path d="M5 12h14M12 5l7 7-7 7"/>' +
+                    '</svg>' +
+                    '</a>' +
+                    '</div>';
+
+                feed.appendChild(li);
+            }
+        }
+
+        function showError(msg) {
+            $('error-message').textContent = msg;
+            $('news-error').classList.add('visible');
+        }
+
+        function loadNews() {
+            $('news-feed').innerHTML = '';
+            $('news-feed').hidden = true;
+            $('news-error').classList.remove('visible');
+            $('article-count').textContent = '';
+            $('skeleton-loader').hidden = false;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', './data.json', true);
+            xhr.responseType = 'text';
+
+            xhr.onload = function() {
+                /* status 0 = file:// success in Firefox/Chrome */
+                if (xhr.status === 200 || xhr.status === 0) {
+                    try {
+                        var data = JSON.parse(xhr.responseText);
+                        var articles = data.articles || [];
+                        if (!articles.length) {
+                            $('skeleton-loader').hidden = true;
+                            showError('No articles found in the feed.');
+                            return;
+                        }
+                        $('skeleton-loader').hidden = true;
+                        renderArticles(articles);
+                        $('news-feed').hidden = false;
+                        $('article-count').textContent = articles.length + ' stories';
+                    } catch (e) {
+                        $('skeleton-loader').hidden = true;
+                        showError('Could not parse news data: ' + e.message);
+                    }
+                } else {
+                    $('skeleton-loader').hidden = true;
+                    showError('Failed to load news (HTTP ' + xhr.status + ').');
+                }
+            };
+
+            xhr.onerror = function() {
+                $('skeleton-loader').hidden = true;
+                showError('Network error — make sure data.json is in the same folder.');
+            };
+
+            xhr.send();
+        }
+
+        $('today-date').textContent = formatDate(new Date());
+        $('edition-label').textContent = getEdition();
+        $('retry-btn').addEventListener('click', loadNews);
+
+        loadNews();
+    </script>
+</body>
+
+</html>
