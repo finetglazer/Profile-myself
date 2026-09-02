@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your collection of saved news articles.">
+    <meta name="author" content="Tran Manh Hung">
+    <title>Saved News — Tran Manh Hung</title>
+    <link rel="icon" type="image/png" href="image/My_signature-removebg-preview.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/daily-news.css">
+</head>
+
+<body>
+    <main class="news-page" id="news-page">
+
+        <!-- Header -->
+        <header class="news-header" id="news-header">
+            <span class="news-header__edition">Reading List</span>
+            <h1 class="news-header__title">Saved articles</h1>
+            <div class="news-header__meta">
+                <span class="news-header__date" id="saved-summary-text">Your personal collection</span>
+                <span class="news-header__count" id="saved-count-badge" aria-live="polite">0 saved</span>
+            </div>
+        </header>
+
+        <!-- Sub-Navigation Tabs -->
+        <nav class="news-nav" aria-label="News sections">
+            <a href="daily-news.html" class="news-nav__link">Feed</a>
+            <a href="saved-news.html" class="news-nav__link active">Saved <span class="news-nav__badge" id="tab-saved-badge">0</span></a>
+        </nav>
+
+        <!-- Skeleton Loader (shown while fetching from JSONBin) -->
+        <ul class="skeleton-feed" id="skeleton-loader" aria-label="Loading saved articles" aria-busy="true">
+            <li class="skeleton-item">
+                <div class="skeleton-line skeleton-line--title-1"></div>
+                <div class="skeleton-line skeleton-line--title-2"></div>
+                <div class="skeleton-line skeleton-line--body-1"></div>
+                <div class="skeleton-line skeleton-line--body-2"></div>
+            </li>
+            <li class="skeleton-item">
+                <div class="skeleton-line skeleton-line--title-1"></div>
+                <div class="skeleton-line skeleton-line--title-2"></div>
+                <div class="skeleton-line skeleton-line--body-1"></div>
+                <div class="skeleton-line skeleton-line--body-2"></div>
+            </li>
+        </ul>
+
+        <!-- Saved Articles Feed -->
+        <ul class="news-feed" id="saved-feed" aria-label="Saved news articles" hidden></ul>
+
+        <!-- Empty State -->
+        <div class="saved-empty" id="saved-empty" hidden>
+            <div class="saved-empty__icon">🔖</div>
+            <h2 class="saved-empty__title">No saved articles yet</h2>
+            <p class="saved-empty__text">Click the "Save" button on any article from your daily feed to store it here for reading later.</p>
+            <a href="daily-news.html" class="saved-empty__btn">Explore Daily Feed</a>
+        </div>
+
+        <!-- Toast Notification -->
+        <div class="news-toast" id="news-toast" role="status" aria-live="polite"></div>
+
+    </main>
+
+    <script type="module">
+        import { fetchSavedArticles, toggleSaveArticle, getLocalSavedArticles } from './js/saved-news-service.js';
+
+        const $ = id => document.getElementById(id);
+        let toastTimeout = null;
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function escapeAttr(str) {
+            return String(str).replace(/"/g, '%22');
+        }
+
+        function showToast(msg) {
+            const toast = $('news-toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        function updateBadges(count) {
+            $('saved-count-badge').textContent = `${count} saved`;
+            $('tab-saved-badge').textContent = count;
+        }
+
+        function renderSavedArticles(articles) {
+            const feed = $('saved-feed');
+            const emptyState = $('saved-empty');
+
+            feed.innerHTML = '';
+            updateBadges(articles.length);
+
+            if (!articles || articles.length === 0) {
+                feed.hidden = true;
+                emptyState.hidden = false;
+                return;
+            }
+
+            emptyState.hidden = true;
+            feed.hidden = false;
+
+            articles.forEach((article, i) => {
+                const li = document.createElement('li');
+                li.className = 'news-article';
+                li.setAttribute('aria-label', `Saved article ${i + 1}`);
+
+                li.innerHTML = `
+                    <a class="news-article__link"
+                       href="${escapeAttr(article.url)}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       aria-label="${escapeAttr(article.title)} — opens in new tab">
+                        <h2 class="news-article__heading">${escapeHtml(article.title)}</h2>
+                        <p class="news-article__summary">${escapeHtml(article.summary)}</p>
+                    </a>
+                    <div class="news-article__footer">
+                        <button class="news-article__save-btn saved" data-index="${i}">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            <span>Remove</span>
+                        </button>
+                        <a class="news-article__read-more"
+                           href="${escapeAttr(article.url)}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           tabindex="-1"
+                           aria-hidden="true">
+                            Read full story
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                                 aria-hidden="true">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                `;
+
+                // Handle remove button
+                const removeBtn = li.querySelector('.news-article__save-btn');
+                removeBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    removeBtn.disabled = true;
+
+                    const res = await toggleSaveArticle(article);
+                    showToast('Removed from saved list');
+                    
+                    // Re-render
+                    const currentArticles = getLocalSavedArticles();
+                    renderSavedArticles(currentArticles);
+                });
+
+                feed.appendChild(li);
+            });
+        }
+
+        async function loadSavedPage() {
+            $('skeleton-loader').hidden = false;
+            $('saved-feed').hidden = true;
+            $('saved-empty').hidden = true;
+
+            // Render from local cache immediately for instant speed
+            const cached = getLocalSavedArticles();
+            updateBadges(cached.length);
+            if (cached.length > 0) {
+                renderSavedArticles(cached);
+                $('skeleton-loader').hidden = true;
+            }
+
+            // Sync with JSONBin in background
+            const cloudArticles = await fetchSavedArticles();
+            $('skeleton-loader').hidden = true;
+            renderSavedArticles(cloudArticles);
+        }
+
+        loadSavedPage();
+    </script>
+</body>
+
+</html>

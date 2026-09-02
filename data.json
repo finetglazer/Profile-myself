@@ -1,1 +1,79 @@
-{"articles":[{"title":"Is Shipyard Welding the Right First Job for Humanoid Robots?","summary":"Persona AI is focusing on deploying humanoid robots specifically for industrial shipyard welding tasks. The company aims to address severe labor shortages by automating long, linear welds that require continuous precision. This targeted approach seeks to maximize economic viability by augmenting high-value skilled labor in heavy manufacturing.","url":"https://spectrum.ieee.org/persona-ai-humanoid-robot-welding"},{"title":"Robot Recycler Salvages Parts From Broken Machines","summary":"Researchers at Karlsruhe Institute of Technology developed a robotic system designed to disassemble broken products and salvage reusable components. The system combines predictive algorithms and robotic manipulators to inspect, adapt, and dismantle equipment without damaging valuable parts. This innovation aims to advance a fully automated circular economy by making machine repairs more sustainable and cost-effective.","url":"https://spectrum.ieee.org/recycling-robot"},{"title":"Walden Robotics Partners With Toyota on Practical Humanoids","summary":"Toyota spinout Walden Robotics emerged with substantial funding to build practical, wheeled humanoid robots tailored for factory automation. By choosing a wheeled base over legs, the company enhances workplace safety and battery operational time in manufacturing environments. The initiative aims to relieve human workers from repetitive tasks while improving overall industrial productivity.","url":"https://spectrum.ieee.org/humanoid-robots-walden-robotics-toyota"},{"title":"REPORT: U.S. Adds 20 GWh of Energy Storage Capacity in Q2, Largest Quarter on Record","summary":"The United States battery energy storage sector achieved a record-breaking installation of over 20 gigawatt-hours in the second quarter. Grid operators are increasingly deploying large-scale energy storage solutions to enhance power grid stability and reliability. This rapid expansion nearly doubles the national energy storage capacity, reflecting strong momentum in clean energy infrastructure.","url":"https://cleantechnica.com/2026/09/01/report-u-s-adds-20-gwh-of-energy-storage-capacity-in-q2-largest-quarter-on-record/"},{"title":"Solar Power Leaps Key Cost Barrier As Coal And Gas Sidelined (Shocker!)","summary":"A comprehensive economic report highlights that solar power generation costs have dropped significantly, making it cheaper than fossil fuels in many regions. The declining price of solar energy presents major financial incentives for developing nations to bypass coal and gas generation. Furthermore, this shifting cost dynamic is accelerating global investments in renewable infrastructure and solar equipment manufacturing.","url":"https://cleantechnica.com/2026/09/01/solar-power-cost-distributed-aligned-climate-capital-fund-us/"},{"title":"Goodbye CPAP? New sleep apnea pill cuts breathing events by 44%","summary":"A new once-nightly pill named AD109 reduced sleep apnea breathing interruptions by roughly 44 percent in a Phase 3 clinical trial. The pharmaceutical treatment works by targeting and strengthening upper airway muscles during sleep to maintain open airways. This advancement offers a promising oral alternative for individuals who struggle to tolerate traditional CPAP machines.","url":"https://www.sciencedaily.com/releases/2026/08/260831015203.htm"},{"title":"HEPA air purifiers may boost brain function after just one month","summary":"A recent study revealed that middle-aged and older adults showed a 12 percent improvement in executive brain function after using residential HEPA air purifiers for one month. Cleaner indoor air appears to protect cognitive performance by reducing exposure to harmful traffic-related particulate pollution. The findings suggest that accessible filtration systems can serve as a simple strategy to support overall brain health.","url":"https://www.sciencedaily.com/releases/2026/08/260830000016.htm"}]}
+{
+  "articles": [
+    {
+      "title": "Internet Việt Nam lần đầu vào top 10 thế giới cả di động và cố định",
+      "summary": "Internet di động tại Việt Nam đã tăng 10 bậc để vươn lên vị trí cao trên bảng xếp hạng toàn cầu. Trong khi đó, kết nối Internet cố định cũng ghi nhận sự tăng trưởng ấn tượng khi đạt vị trí thứ 7 thế giới. Đây là lần đầu tiên cả hai loại hình kết nối mạng của Việt Nam đồng thời lọt vào top 10 bảng xếp hạng quốc tế.",
+      "url": "https://vnexpress.net/internet-viet-nam-lan-dau-vao-top-10-the-gioi-ca-di-dong-va-co-dinh-5115655.html"
+    },
+    {
+      "title": "Cơn sốt học bán dẫn để vào Samsung, SK Hynix",
+      "summary": "Sự bùng nổ của ngành công nghiệp chip nhớ đang tạo nên làn sóng thu hút nhân lực lớn tại Hàn Quốc. Nhiều học sinh và sinh viên đã chủ động chuyển hướng sang học các ngành nghề liên quan đến kỹ thuật bán dẫn. Mục tiêu hàng đầu của các bạn trẻ là tìm kiếm cơ hội làm việc tại những tập đoàn công nghệ lớn như Samsung và SK Hynix.",
+      "url": "https://vnexpress.net/con-sot-hoc-ban-dan-de-vao-samsung-sk-hynix-5112824.html"
+    },
+    {
+      "title": "Tại sao máy bay biến mất khỏi radar khi qua đại dương",
+      "summary": "Các chuyến bay di chuyển qua đại dương thường vượt ra khỏi phạm vi theo dõi của các trạm radar trên đất liền. Sự kết hợp giữa khoảng cách quá xa và độ cong tự nhiên của Trái Đất khiến tín hiệu radar thông thường không thể tiếp cận. Do đó, máy bay có thể tạm thời biến mất khỏi màn hình giám sát cho đến khi đi vào vùng phủ sóng mới.",
+      "url": "https://vnexpress.net/tai-sao-may-bay-bien-mat-khoi-radar-khi-qua-dai-duong-5114689.html"
+    },
+    {
+      "title": "Máy lọc không khí có radar theo dõi người dùng",
+      "summary": "Mẫu máy lọc không khí AirPursue PM20 Pro của Dreame được tích hợp nhiều công nghệ hiện đại nhằm tối ưu trải nghiệm sử dụng. Thiết bị sở hữu cảm biến radar thông minh giúp định vị và theo dõi chuyển động của người dùng trong phòng. Ngoài ra, sản phẩm còn tích hợp tính năng quạt mát, sưởi ấm cùng hệ thống khử khuẩn UVC tiên tiến.",
+      "url": "https://vnexpress.net/may-loc-khong-khi-co-radar-theo-doi-nguoi-dung-5115684.html"
+    },
+    {
+      "title": "Giới hạn của con người bộc lộ qua kỷ lục nước rút của robot",
+      "summary": "Một robot humanoid tại Trung Quốc vừa thiết lập kỷ lục chạy 100 mét trong khoảng thời gian chỉ 8,64 giây. Thành tựu này được các chuyên gia đánh giá là bước tiến công nghệ mang tính đột phá trong lĩnh vực robot học. Kết quả này cho thấy máy móc đang dần vượt qua những giới hạn thể chất vốn có của con người.",
+      "url": "https://vnexpress.net/gioi-han-cua-con-nguoi-boc-lo-qua-ky-luc-nuoc-rut-cua-robot-5114911.html"
+    },
+    {
+      "title": "'Ngôi sao bán dẫn Trung Quốc' sản xuất bộ nhớ HBM tiên tiến",
+      "summary": "Công ty bán dẫn CXMT của Trung Quốc đã đạt được bước tiến lớn khi sản xuất thành công bộ nhớ HBM3E. Đây là dòng bộ nhớ băng thông cao vô cùng quan trọng đối với các hệ thống xử lý trí tuệ nhân tạo. Sự kiện này đánh dấu năng lực tự chủ công nghệ ngày càng tăng của ngành bán dẫn nội địa.",
+      "url": "https://vnexpress.net/ngoi-sao-ban-dan-trung-quoc-san-xuat-bo-nho-hbm-tien-tien-5115523.html"
+    },
+    {
+      "title": "Chèo SUP khi hồ Trị An cạn nước",
+      "summary": "Trong dịp nghỉ lễ năm nay, mực nước tại hồ Trị An xuống thấp làm lộ ra những bãi bồi tự nhiên tuyệt đẹp. Cảnh quan mới lạ ven rừng Mã Đà đã nhanh chóng thu hút đông đảo du khách tìm đến trải nghiệm. Nhiều bạn trẻ hào hứng tham gia các hoạt động ngoài trời như chèo SUP, tắm hồ và cắm trại qua đêm.",
+      "url": "https://vnexpress.net/cheo-sup-khi-ho-tri-an-can-nuoc-5115678.html"
+    },
+    {
+      "title": "Trekking hồ Mắt Ngọc - viên ngọc xanh của Hòa Bình",
+      "summary": "Hồ Mắt Ngọc là một tuyệt tác thiên nhiên ẩn mình giữa những dãy núi đá vôi hùng vĩ tại tỉnh Hòa Bình. Để đến được đây, du khách phải thực hiện hành trình trekking kéo dài khoảng ba giờ qua nhiều địa hình rừng núi. Phần thưởng cho chuyến đi là khung cảnh lòng hồ trong xanh nguyên sơ và vô cùng yên bình.",
+      "url": "https://vnexpress.net/trekking-ho-mat-ngoc-vien-ngoc-xanh-cua-hoa-binh-5115609.html"
+    },
+    {
+      "title": "Africa’s Solar Boom Is Showing Up On Rooftops Before It Shows Up In The Statistics",
+      "summary": "Official data shows Africa added 4.5 GW of solar in 2025, but panel imports reached 18.2 GW during the same period. This massive gap highlights a rapid rise in unrecorded rooftop solar installations across the continent. Small-scale generation is transforming energy access long before official statistics catch up with reality.",
+      "url": "https://cleantechnica.com/2026/09/02/africa-solar-boom-hidden-official-statistics/"
+    },
+    {
+      "title": "REPORT: U.S. Adds 20 GWh of Energy Storage Capacity in Q2, Largest Quarter on Record",
+      "summary": "The United States energy storage sector installed a record-breaking 20.2 gigawatt-hours of new capacity in the second quarter. Grid operators are increasingly deploying large-scale battery systems to maintain power reliability during demand peaks. This record expansion reflects the accelerating transition toward clean energy grid infrastructure.",
+      "url": "https://cleantechnica.com/2026/09/01/report-u-s-adds-20-gwh-of-energy-storage-capacity-in-q2-largest-quarter-on-record/"
+    },
+    {
+      "title": "Fervo and Google sign world’s largest deal for next-gen geothermal power",
+      "summary": "Fervo Energy has entered into a landmark agreement to provide Google with nearly 400 megawatts of clean geothermal power. The electricity will be sourced from a novel geothermal project located in southwest Utah. This transaction represents the largest commercial deal ever struck for next-generation geothermal energy technology.",
+      "url": "https://www.canarymedia.com/articles/geothermal/fervo-google-deal-next-gen-geothermal"
+    },
+    {
+      "title": "How AI plotted an interstellar journey to Alpha Centauri",
+      "summary": "The non-profit Fermi Explorer Mission announced plans to launch a spacecraft toward Alpha Centauri by late 2029. Advanced AI models were utilized to optimize trajectory calculations and mission design parameters for this long-duration voyage. The ambitious endeavor aims to travel 4.4 light-years to explore our nearest neighboring star system.",
+      "url": "https://www.technologyreview.com/2026/09/01/1143247/ai-interstellar-journey-alpha-centauri/"
+    },
+    {
+      "title": "Mindfulness may lower blood pressure in just 8 weeks",
+      "summary": "A clinical study reveals that structured mindfulness and gratitude training can significantly improve cardiovascular health. Participants experienced noticeable reductions in blood pressure and systemic inflammation markers within eight to twelve weeks. The findings suggest that psychological wellness practices offer a practical complementary approach to heart disease prevention.",
+      "url": "https://www.sciencedaily.com/releases/2026/09/260901010721.htm"
+    },
+    {
+      "title": "Goodbye CPAP? New sleep apnea pill cuts breathing events by 44%",
+      "summary": "A phase 3 clinical trial demonstrated that an experimental once-nightly pill reduced sleep apnea breathing interruptions by 44 percent. The medication operates by targeting and strengthening airway muscles to prevent upper airway collapse during sleep. This pharmaceutical therapy could provide an effective alternative for patients who struggle with traditional CPAP machines.",
+      "url": "https://www.sciencedaily.com/releases/2026/08/260831015203.htm"
+    },
+    {
+      "title": "Scientists find a human-only gene that may help explain our brainpower",
+      "summary": "Researchers discovered that human microglial cells take up to eight years to fully mature compared to just weeks in mice. This extended developmental timeline is unique to humans and appears tied to specific genetic adaptations. The prolonged maturation process likely contributes to the formation of complex neural networks underlying human intelligence.",
+      "url": "https://www.sciencedaily.com/releases/2026/08/260831015141.htm"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -33,8 +33,11 @@
             </div>
         </header>
 
-        <!-- News Feed (populated by JS) -->
-        <ul class="news-feed" id="news-feed" aria-label="News articles" hidden></ul>
+        <!-- Sub-Navigation Tabs -->
+        <nav class="news-nav" aria-label="News sections">
+            <a href="daily-news.html" class="news-nav__link active">Feed</a>
+            <a href="saved-news.html" class="news-nav__link">Saved <span class="news-nav__badge" id="saved-count-badge">0</span></a>
+        </nav>
 
         <!-- Skeleton Loader (shown while fetching) -->
         <ul class="skeleton-feed" id="skeleton-loader" aria-label="Loading news articles" aria-busy="true">
@@ -61,6 +64,9 @@
             </li>
         </ul>
 
+        <!-- News Feed (populated by JS) -->
+        <ul class="news-feed" id="news-feed" aria-label="News articles" hidden></ul>
+
         <!-- Error State -->
         <div class="news-error" id="news-error" role="alert" aria-live="assertive">
             <div class="news-error__icon" aria-hidden="true">📡</div>
@@ -69,10 +75,16 @@
             <button class="news-error__retry" id="retry-btn">Try again</button>
         </div>
 
+        <!-- Toast Notification -->
+        <div class="news-toast" id="news-toast" role="status" aria-live="polite"></div>
+
     </main>
 
-    <script>
-        var $ = function(id) { return document.getElementById(id); };
+    <script type="module">
+        import { fetchSavedArticles, toggleSaveArticle, isArticleSaved, getLocalSavedArticles } from './js/saved-news-service.js';
+
+        const $ = id => document.getElementById(id);
+        let toastTimeout = null;
 
         function formatDate(date) {
             return date.toLocaleDateString('en-US', {
@@ -81,7 +93,7 @@
         }
 
         function getEdition() {
-            var h = new Date().getHours();
+            const h = new Date().getHours();
             if (h < 12) return 'Morning Edition';
             if (h < 17) return 'Afternoon Edition';
             return 'Evening Edition';
@@ -99,37 +111,87 @@
             return String(str).replace(/"/g, '%22');
         }
 
+        function showToast(msg) {
+            const toast = $('news-toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        function updateSavedBadge() {
+            const count = getLocalSavedArticles().length;
+            $('saved-count-badge').textContent = count;
+        }
+
         function renderArticles(articles) {
-            var feed = $('news-feed');
+            const feed = $('news-feed');
             feed.innerHTML = '';
 
-            for (var i = 0; i < articles.length; i++) {
-                var article = articles[i];
-                var li = document.createElement('li');
+            articles.forEach((article, i) => {
+                const li = document.createElement('li');
                 li.className = 'news-article';
+                li.setAttribute('aria-label', `Article ${i + 1}`);
 
-                li.innerHTML =
-                    '<a class="news-article__link"' +
-                    ' href="' + escapeAttr(article.url) + '"' +
-                    ' target="_blank" rel="noopener noreferrer">' +
-                    '<h2 class="news-article__heading">' + escapeHtml(article.title) + '</h2>' +
-                    '<p class="news-article__summary">' + escapeHtml(article.summary) + '</p>' +
-                    '</a>' +
-                    '<div class="news-article__footer">' +
-                    '<a class="news-article__read-more"' +
-                    ' href="' + escapeAttr(article.url) + '"' +
-                    ' target="_blank" rel="noopener noreferrer"' +
-                    ' tabindex="-1" aria-hidden="true">' +
-                    'Read full story' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"' +
-                    ' stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
-                    '<path d="M5 12h14M12 5l7 7-7 7"/>' +
-                    '</svg>' +
-                    '</a>' +
-                    '</div>';
+                const saved = isArticleSaved(article.url);
+
+                li.innerHTML = `
+                    <a class="news-article__link"
+                       href="${escapeAttr(article.url)}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       aria-label="${escapeAttr(article.title)} — opens in new tab">
+                        <h2 class="news-article__heading">${escapeHtml(article.title)}</h2>
+                        <p class="news-article__summary">${escapeHtml(article.summary)}</p>
+                    </a>
+                    <div class="news-article__footer">
+                        <button class="news-article__save-btn ${saved ? 'saved' : ''}" data-index="${i}">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            <span>${saved ? 'Saved' : 'Save'}</span>
+                        </button>
+                        <a class="news-article__read-more"
+                           href="${escapeAttr(article.url)}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           tabindex="-1"
+                           aria-hidden="true">
+                            Read full story
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                                 aria-hidden="true">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                `;
+
+                // Handle save button click
+                const saveBtn = li.querySelector('.news-article__save-btn');
+                saveBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    saveBtn.disabled = true;
+
+                    const res = await toggleSaveArticle(article);
+                    updateSavedBadge();
+
+                    if (res.isSaved) {
+                        saveBtn.classList.add('saved');
+                        saveBtn.querySelector('span').textContent = 'Saved';
+                        showToast('📌 Article saved for later');
+                    } else {
+                        saveBtn.classList.remove('saved');
+                        saveBtn.querySelector('span').textContent = 'Save';
+                        showToast('Removed from saved articles');
+                    }
+                    saveBtn.disabled = false;
+                });
 
                 feed.appendChild(li);
-            }
+            });
         }
 
         function showError(msg) {
@@ -137,50 +199,65 @@
             $('news-error').classList.add('visible');
         }
 
-        function loadNews() {
-            $('news-feed').innerHTML = '';
+        async function loadNews() {
+            $('skeleton-loader').hidden = false;
             $('news-feed').hidden = true;
+            $('news-feed').innerHTML = '';
             $('news-error').classList.remove('visible');
             $('article-count').textContent = '';
-            $('skeleton-loader').hidden = false;
 
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', './data.json', true);
-            xhr.responseType = 'text';
+            // Sync saved badge
+            updateSavedBadge();
+            fetchSavedArticles().then(updateSavedBadge);
 
-            xhr.onload = function() {
-                /* status 0 = file:// success in Firefox/Chrome */
-                if (xhr.status === 200 || xhr.status === 0) {
-                    try {
-                        var data = JSON.parse(xhr.responseText);
-                        var articles = data.articles || [];
-                        if (!articles.length) {
-                            $('skeleton-loader').hidden = true;
-                            showError('No articles found in the feed.');
-                            return;
-                        }
-                        $('skeleton-loader').hidden = true;
-                        renderArticles(articles);
-                        $('news-feed').hidden = false;
-                        $('article-count').textContent = articles.length + ' stories';
-                    } catch (e) {
-                        $('skeleton-loader').hidden = true;
-                        showError('Could not parse news data: ' + e.message);
-                    }
-                } else {
-                    $('skeleton-loader').hidden = true;
-                    showError('Failed to load news (HTTP ' + xhr.status + ').');
-                }
-            };
+            try {
+                const response = await fetch('./data.json', { cache: 'no-cache' });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                const articles = data.articles || [];
 
-            xhr.onerror = function() {
                 $('skeleton-loader').hidden = true;
-                showError('Network error — make sure data.json is in the same folder.');
-            };
+                if (!articles.length) {
+                    showError('No articles found in the feed.');
+                    return;
+                }
 
-            xhr.send();
+                renderArticles(articles);
+                $('news-feed').hidden = false;
+                $('article-count').textContent = `${articles.length} stories`;
+            } catch (err) {
+                // Fallback attempt for file:// or local XHR
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', './data.json', true);
+                xhr.onload = function() {
+                    $('skeleton-loader').hidden = true;
+                    if (xhr.status === 200 || xhr.status === 0) {
+                        try {
+                            var data = JSON.parse(xhr.responseText);
+                            var articles = data.articles || [];
+                            if (!articles.length) {
+                                showError('No articles found in the feed.');
+                                return;
+                            }
+                            renderArticles(articles);
+                            $('news-feed').hidden = false;
+                            $('article-count').textContent = articles.length + ' stories';
+                        } catch (e) {
+                            showError('Could not parse news data.');
+                        }
+                    } else {
+                        showError('Failed to load news.');
+                    }
+                };
+                xhr.onerror = function() {
+                    $('skeleton-loader').hidden = true;
+                    showError('Network error — make sure data.json is present.');
+                };
+                xhr.send();
+            }
         }
 
+        /* ── Init ── */
         $('today-date').textContent = formatDate(new Date());
         $('edition-label').textContent = getEdition();
         $('retry-btn').addEventListener('click', loadNews);
