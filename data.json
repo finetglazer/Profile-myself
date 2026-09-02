@@ -1,0 +1,39 @@
+{
+  "articles": [
+    {
+      "title": "Is Shipyard Welding the Right First Job for Humanoid Robots?",
+      "summary": "Startup Persona AI is developing humanoid robots specifically designed to handle industrial welding tasks in shipyards. By focusing on skilled trade automation, the company addresses severe labor shortages while targeting economically viable applications. Their bipedal robots excel at executing precise, repetitive linear welds over long distances across challenging shipyard terrains.",
+      "url": "https://spectrum.ieee.org/persona-ai-humanoid-robot-welding"
+    },
+    {
+      "title": "Robot Recycler Salvages Parts From Broken Machines",
+      "summary": "Researchers at the Karlsruhe Institute of Technology created an automated robotic disassembly system to recycle machine parts. The smart system utilizes predictive algorithms and CAD models to identify damages and carefully extract reusable components without causing harm. This innovative technology aims to lower repair costs and advance a sustainable circular economy for industrial equipment.",
+      "url": "https://spectrum.ieee.org/recycling-robot"
+    },
+    {
+      "title": "Walden Robotics Partners With Toyota on Practical Humanoids",
+      "summary": "Walden Robotics emerged from stealth with $300 million in funding to build practical, wheeled humanoid robots for manufacturing. Spun out from the Toyota Research Institute, the company prioritizes static stability and safety to operate alongside human workers. By using durable grippers and a mobile base, these robots aim to reliably automate high-utilization repetitive tasks in factories.",
+      "url": "https://spectrum.ieee.org/humanoid-robots-walden-robotics-toyota"
+    },
+    {
+      "title": "Solar Power Leaps Key Cost Barrier As Coal And Gas Sidelined (Shocker!)",
+      "summary": "A new report indicates that solar power has surpassed a major economic milestone by becoming cheaper than fossil fuels. The falling costs allow clean energy solutions to effectively replace coal and natural gas in vulnerable nations. This cost transition also provides positive momentum for the growth and expansion of solar manufacturing globally.",
+      "url": "https://cleantechnica.com/2026/09/01/solar-power-cost-distributed-aligned-climate-capital-fund-us/"
+    },
+    {
+      "title": "Goodbye CPAP? New sleep apnea pill cuts breathing events by 44%",
+      "summary": "A novel daily pill named AD109 reduced nighttime breathing interruptions by 44% in a recent Phase 3 clinical trial. The medication works by strengthening the airway muscles during sleep to maintain unobstructed breathing and improve oxygen levels. This targeted pharmaceutical approach could offer a comfortable alternative for patients who struggle to use standard CPAP machines.",
+      "url": "https://www.sciencedaily.com/releases/2026/08/260831015203.htm"
+    },
+    {
+      "title": "Mindfulness may lower blood pressure in just 8 weeks",
+      "summary": "New health research shows that mindfulness and gratitude practice can measurably reduce blood pressure within eight to twelve weeks. Structured daily exercises combined with regular reinforcement significantly lowered internal inflammation markers and improved heart health. Experts suggest integrating psychological well-being routines as an accessible preventative tool for cardiovascular care.",
+      "url": "https://www.sciencedaily.com/releases/2026/09/260901010721.htm"
+    },
+    {
+      "title": "Drones With Claws Perch on Arctic Icebergs",
+      "summary": "Engineers in Canada designed the Ice Dart drone equipped with microspine claws that allow it to land on icy slopes. By perching directly onto slippery iceberg surfaces, the drone drastically conserves battery power while conducting extended scientific observations. This technology offers an effective silent method for long-term climate monitoring and tracking ice movements in remote Arctic regions.",
+      "url": "https://spectrum.ieee.org/arctic-iceberg-drones"
+    }
+  ]
+}

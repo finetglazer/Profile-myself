@@ -1,0 +1,38 @@
+name: Daily News Curation
+
+on:
+  schedule:
+    # Runs at 23:15 UTC (6:15 AM Vietnam time) every day.
+    # We offset by 15 minutes to avoid GitHub Actions server congestion at the top of the hour.
+    - cron: '15 23 * * *'
+  workflow_dispatch: # Adds a button to trigger it manually
+
+permissions:
+  contents: write # Crucial: Allows the bot to commit data.json back to your repo
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        
+      - name: Fetch and Curate News
+        env: 
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python fetch_news.py
+        
+      - name: Commit and Push data.json
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add data.json
+          git commit -m "Update daily news [skip ci]" || exit 0
+          git push
