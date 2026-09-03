@@ -221,15 +221,34 @@ Hard rules:
 {world_text}
 """
 
-    response = client.models.generate_content(
-        model='gemini-3.6-flash',
-        contents=prompt,
-        config={
-            'response_mime_type': 'application/json',
-            'response_schema': TopNews,
-            'temperature': 0.2,
-        },
-    )
+    models_to_try = ['gemini-3.6-flash', 'gemini-2.5-flash', 'gemini-1.5-flash']
+    response = None
+
+    for model_name in models_to_try:
+        for attempt in range(3):
+            try:
+                print(f"[INFO] Curation attempt {attempt + 1} using model '{model_name}'...", flush=True)
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                    config={
+                        'response_mime_type': 'application/json',
+                        'response_schema': TopNews,
+                        'temperature': 0.2,
+                    },
+                )
+                if response and response.text:
+                    print(f"[SUCCESS] Curated successfully with {model_name}", flush=True)
+                    break
+            except Exception as e:
+                print(f"[WARN] Model '{model_name}' attempt {attempt + 1} failed: {e}", flush=True)
+                time.sleep(3 * (attempt + 1))
+        if response and response.text:
+            break
+
+    if not response or not response.text:
+        print("[ERROR] All Gemini models failed to generate daily news.")
+        return
 
     # Save the clean JSON for the Frontend
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
