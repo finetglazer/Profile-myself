@@ -29,10 +29,10 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python fetch_news.py
         
-      - name: Commit and Push data.json
+      - name: Commit and Push data.json & history.json
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git add data.json
+          git add data.json history.json
           git commit -m "Update daily news [skip ci]" || exit 0
           git push
